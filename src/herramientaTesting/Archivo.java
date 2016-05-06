@@ -2,12 +2,15 @@ package herramientaTesting;
 
 import java.io.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class Archivo implements Analizable {
 	//Atributos
 	private Long cantidadDeLineas;
 	private Long cantidadLineasComentadas;
 	private Long cantidadLineasEnBlanco;
 	private File archivo;
+	private DefaultMutableTreeNode nodo;
 	
 	//Constructor
 	public Archivo(File archivo) {
@@ -40,7 +43,17 @@ public class Archivo implements Analizable {
 	}
 	
 	public String toString() {
-		return "Archivo: "+archivo.getName()+"\n\tComentarios: "+cantidadLineasComentadas+"\n\tBlanco: "+cantidadLineasEnBlanco+"\n\tCodigo: "+getCantidadLineasDeCodigo()+"\n\tTotal: "+cantidadDeLineas;
+		return archivo.getName();
+	}
+	
+	public DefaultMutableTreeNode colocarEnArbol(DefaultMutableTreeNode nodo){
+		this.nodo=new DefaultMutableTreeNode(this);
+		nodo.add(this.nodo);
+		return this.nodo;
+	}
+	
+	public DefaultMutableTreeNode getNodo(){
+		return this.nodo;
 	}
 	
 	public void analizar() {
@@ -82,8 +95,6 @@ public class Archivo implements Analizable {
 					this.cantidadDeLineas++;
 				linea = br.readLine();
 			}
-			System.out.println(this);
-			System.out.println("FIN");
 		} catch(IOException e) {
 			e.printStackTrace();
 		}

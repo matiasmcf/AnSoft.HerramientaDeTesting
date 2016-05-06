@@ -3,6 +3,8 @@ package herramientaTesting;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class Carpeta implements Analizable {
 	//Atributos
 	private ArrayList <Analizable> contenido;
@@ -10,6 +12,7 @@ public class Carpeta implements Analizable {
 	private Long cantidadLineasComentadas;
 	private Long cantidadLineasEnBlanco;
 	private File carpeta;
+	private DefaultMutableTreeNode nodo;
 	
 	//Constructor
 	public Carpeta(File carpeta){
@@ -57,9 +60,21 @@ public class Carpeta implements Analizable {
 		return contenido;
 	}
 	
-	public String toString()
-	{
-		return "Carpeta: "+carpeta.getName()+"\n\tArchivos: "+carpeta.listFiles().length+"\n\tComentarios: "+cantidadLineasComentadas+"\n\tBlanco: "+cantidadLineasEnBlanco+"\n\tCodigo: "+getCantidadLineasDeCodigo()+"\n\tTotal: "+cantidadDeLineas;
+	public String toString(){
+		return carpeta.getName();
+	}
+	
+	public DefaultMutableTreeNode colocarEnArbol(DefaultMutableTreeNode nodo){
+		this.nodo = new DefaultMutableTreeNode(this);
+		for (Analizable an : contenido) {
+				an.colocarEnArbol(this.nodo);
+		}
+		nodo.add(this.nodo);
+		return this.nodo;
+	}
+	
+	public DefaultMutableTreeNode getNodo(){
+		return this.nodo;
 	}
 	
 	public void analizar(){
@@ -70,6 +85,5 @@ public class Carpeta implements Analizable {
 			cantidadLineasComentadas+=a.getCantidadLineasComentadas();
 			cantidadLineasEnBlanco+=a.getCantidadLineasEnBlanco();
 		}
-		System.out.println(this);
 	}
 }
