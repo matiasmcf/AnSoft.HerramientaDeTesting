@@ -199,7 +199,7 @@ public class GUI extends JFrame {
         else{
         	carpetaBase = new Archivo(file);
         }
-        arbolDirectorios = new JTree(((Analizable) carpetaBase).colocarEnArbol(new DefaultMutableTreeNode()));
+        arbolDirectorios = new JTree(carpetaBase.colocarEnArbol(new DefaultMutableTreeNode()));
         scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 48, 179, 265);
 		contentPane.add(scrollPane);
