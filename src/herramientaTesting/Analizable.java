@@ -3,6 +3,7 @@ package herramientaTesting;
 import java.io.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 public interface Analizable {
 	public void analizar();

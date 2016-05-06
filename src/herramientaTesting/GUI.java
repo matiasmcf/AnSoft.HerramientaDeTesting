@@ -186,8 +186,7 @@ public class GUI extends JFrame {
 		//JSeparator separator_3 = new JSeparator();
 		//separator_3.setBounds(10, 203, 206, 14);
 		//contentPane.add(separator_3);
-	}
-	
+	}	
 	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
         if(file.isDirectory()){
@@ -196,7 +195,7 @@ public class GUI extends JFrame {
         else{
         	carpetaBase = new Archivo(file);
         }
-        arbolDirectorios = new JTree(carpetaBase.colocarEnArbol(new DefaultMutableTreeNode()));
+        arbolDirectorios = new JTree(((Analizable) carpetaBase).colocarEnArbol(new DefaultMutableTreeNode()));
         scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 48, 179, 265);
 		contentPane.add(scrollPane);
