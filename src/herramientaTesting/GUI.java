@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.LineNumberInputStream;
 import java.util.*;
 
 import javax.swing.JFileChooser;
@@ -20,9 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
-import javax.swing.JTextArea;
 import javax.swing.JList;
-import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
@@ -93,7 +90,7 @@ public class GUI extends JFrame {
 				int returnVal = fc.showOpenDialog(frame);
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            archivo = fc.getSelectedFile();
-		            analizarCodigo(archivo);
+		            analizarPath(archivo);
 		        }
 			}
 		});
@@ -124,15 +121,15 @@ public class GUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblLneasDeCdigo = new JLabel("L\u00EDneas de c\u00F3digo");
-		lblLneasDeCdigo.setBounds(10, 211, 115, 14);
+		lblLneasDeCdigo.setBounds(284, 150, 115, 14);
 		contentPane.add(lblLneasDeCdigo);
 		
 		JLabel lblLneasEnBlanco = new JLabel("L\u00EDneas en blanco");
-		lblLneasEnBlanco.setBounds(10, 236, 115, 14);
+		lblLneasEnBlanco.setBounds(284, 175, 115, 14);
 		contentPane.add(lblLneasEnBlanco);
 		
 		JLabel lblComentariosDeLnea = new JLabel("Comentarios");
-		lblComentariosDeLnea.setBounds(10, 261, 179, 14);
+		lblComentariosDeLnea.setBounds(284, 200, 179, 14);
 		contentPane.add(lblComentariosDeLnea);
 		
 		JLabel lblArchivo = new JLabel("Archivo:");
@@ -140,12 +137,12 @@ public class GUI extends JFrame {
 		contentPane.add(lblArchivo);
 		
 		JLabel lblLneasTotales = new JLabel("L\u00EDneas totales");
-		lblLneasTotales.setBounds(10, 186, 115, 14);
+		lblLneasTotales.setBounds(284, 125, 115, 14);
 		contentPane.add(lblLneasTotales);
 		
 		lblTotalLines = new JLabel("");
 		lblTotalLines.setBackground(Color.GRAY);
-		lblTotalLines.setBounds(124, 186, 121, 14);
+		lblTotalLines.setBounds(398, 125, 121, 14);
 		contentPane.add(lblTotalLines);
 		
 		lblFile = new JLabel("");
@@ -153,38 +150,38 @@ public class GUI extends JFrame {
 		contentPane.add(lblFile);
 		
 		lblLines = new JLabel("");
-		lblLines.setBounds(124, 211, 121, 14);
+		lblLines.setBounds(398, 150, 121, 14);
 		contentPane.add(lblLines);
 		
 		lblBlanks = new JLabel("");
-		lblBlanks.setBounds(124, 236, 121, 14);
+		lblBlanks.setBounds(398, 175, 121, 14);
 		contentPane.add(lblBlanks);
 		
 		lblComment = new JLabel("");
-		lblComment.setBounds(124, 261, 121, 14);
+		lblComment.setBounds(398, 200, 121, 14);
 		contentPane.add(lblComment);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 224, 115, 14);
+		separator.setBounds(284, 163, 115, 14);
 		contentPane.add(separator);
 		
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 249, 115, 14);
+		separator_1.setBounds(284, 188, 115, 14);
 		contentPane.add(separator_1);
 		
 		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(10, 274, 115, 14);
+		separator_2.setBounds(284, 213, 115, 14);
 		contentPane.add(separator_2);
 		
 		JSeparator separator_4 = new JSeparator();
-		separator_4.setBounds(10, 199, 115, 14);
+		separator_4.setBounds(284, 138, 115, 14);
 		contentPane.add(separator_4);
 		
 		listModelCarpetas = new DefaultListModel<String>();
 		listCarpetas= new JList<String>(listModelCarpetas);
 		listCarpetas.setEnabled(false);
 		listCarpetas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listCarpetas.setBounds(20, 36, 187, 119);
+		listCarpetas.setBounds(30, 77, 164, 23);
 		contentPane.add(listCarpetas);
 		
 		listModelContenido = new DefaultListModel<String>();
@@ -209,7 +206,7 @@ public class GUI extends JFrame {
 			}
 		});
 		listContenido.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listContenido.setBounds(296, 36, 164, 119);
+		listContenido.setBounds(30, 124, 164, 119);
 		contentPane.add(listContenido);
 		
 		JButton btnAbrirCarpeta = new JButton("Abrir");
@@ -217,45 +214,47 @@ public class GUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if(!listaContenido.isEmpty()&&listContenido.getSelectedIndex()!=-1){
 					String aux = listContenido.getSelectedValue();
-					pila.push(carpetaBase);
 					for(Analizable an:listaContenido){
-						if(an.getFile().getName().equals(aux))
+						if(an.getFile().isDirectory()&&an.getFile().getName().equals(aux))
 							{
+								pila.push(carpetaBase);
 								carpetaBase=an;
 								break;
 							}
 					}
-					listaContenido.clear();
-					listModelContenido.clear();
-					listModelCarpetas.clear();
 					actualizarListas(carpetaBase);
 				}
 			}
 		});
-		btnAbrirCarpeta.setBounds(217, 36, 69, 23);
+		btnAbrirCarpeta.setBounds(205, 146, 69, 23);
 		contentPane.add(btnAbrirCarpeta);
 		
 		JButton btnAtras = new JButton("Atras");
 		btnAtras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(!pila.isEmpty()){
-					listaContenido.clear();
-					listModelContenido.clear();
-					listModelCarpetas.clear();
-					carpetaBase=pila.pop();
-					actualizarListas(carpetaBase);
+					carpetaBase=pila.pop();	
 				}
+				actualizarListas(carpetaBase);
 			}
 		});
-		btnAtras.setBounds(217, 70, 69, 23);
+		btnAtras.setBounds(205, 191, 69, 23);
 		contentPane.add(btnAtras);
+		
+		JLabel lblCarpetaActual = new JLabel("Carpeta/Archivo:");
+		lblCarpetaActual.setBounds(30, 51, 164, 23);
+		contentPane.add(lblCarpetaActual);
+		
+		JLabel lblContenido = new JLabel("Contenido");
+		lblContenido.setBounds(30, 99, 164, 23);
+		contentPane.add(lblContenido);
 
 		//JSeparator separator_3 = new JSeparator();
 		//separator_3.setBounds(10, 203, 206, 14);
 		//contentPane.add(separator_3);
 	}
 	
-	private void analizarCodigo(File file) {
+	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
         if(file.isDirectory()){
         	carpetaBase = new Carpeta(file);
@@ -280,6 +279,9 @@ public class GUI extends JFrame {
 	}
 	
 	private void actualizarListas(Analizable a){
+		listaContenido.clear();
+		listModelContenido.clear();
+		listModelCarpetas.clear();
 		if(carpetaBase.getFile().isDirectory()){
 			listModelCarpetas.addElement(carpetaBase.getFile().getName());
         	listaContenido.clear();
@@ -292,6 +294,10 @@ public class GUI extends JFrame {
 	        	listaContenido.clear();
 	        	listModelCarpetas.addElement(carpetaBase.getFile().getName());
 	        }
+        lblLines.setText(carpetaBase.getCantidadLineasDeCodigo().toString());
+    	lblBlanks.setText(String.valueOf(carpetaBase.getCantidadLineasEnBlanco()));
+    	lblComment.setText(String.valueOf(carpetaBase.getCantidadLineasComentadas()));
+    	lblTotalLines.setText(String.valueOf(carpetaBase.getCantidadDeLineas()));
 	}
 	
 	private void confirmarSalir() {
