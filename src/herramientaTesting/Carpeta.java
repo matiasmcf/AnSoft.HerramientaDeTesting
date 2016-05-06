@@ -53,6 +53,10 @@ public class Carpeta implements Analizable {
 		return carpeta;
 	}
 	
+	public ArrayList<Analizable> getContenido(){
+		return contenido;
+	}
+	
 	public String toString()
 	{
 		return "Carpeta: "+carpeta.getName()+"\n\tArchivos: "+carpeta.listFiles().length+"\n\tComentarios: "+cantidadLineasComentadas+"\n\tBlanco: "+cantidadLineasEnBlanco+"\n\tCodigo: "+getCantidadLineasDeCodigo()+"\n\tTotal: "+cantidadDeLineas;
