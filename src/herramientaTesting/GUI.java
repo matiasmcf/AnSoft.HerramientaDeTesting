@@ -44,6 +44,7 @@ public class GUI extends JFrame {
 	private ArrayList<Analizable>listaContenido;
 	private File archivo;
 	private Analizable carpetaBase;
+	private JButton btnAbrirCarpeta;
 	//private String extension;
 	
 	//Application
@@ -188,7 +189,6 @@ public class GUI extends JFrame {
 		listContenido = new JList<String>(listModelContenido);
 		listContenido.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
-				
 				String aux = listContenido.getSelectedValue();
 				Analizable auxAn=carpetaBase;;
 				for(Analizable an:listaContenido){
@@ -198,7 +198,10 @@ public class GUI extends JFrame {
 							break;
 						}
 				}
-				
+				if(auxAn.getFile().isDirectory())
+					btnAbrirCarpeta.setEnabled(true);
+				else
+					btnAbrirCarpeta.setEnabled(false);
 		        lblLines.setText(auxAn.getCantidadLineasDeCodigo().toString());
 		    	lblBlanks.setText(String.valueOf(auxAn.getCantidadLineasEnBlanco()));
 		    	lblComment.setText(String.valueOf(auxAn.getCantidadLineasComentadas()));
@@ -209,7 +212,8 @@ public class GUI extends JFrame {
 		listContenido.setBounds(30, 124, 164, 119);
 		contentPane.add(listContenido);
 		
-		JButton btnAbrirCarpeta = new JButton("Abrir");
+		btnAbrirCarpeta = new JButton("Abrir");
+		btnAbrirCarpeta.setEnabled(false);
 		btnAbrirCarpeta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(!listaContenido.isEmpty()&&listContenido.getSelectedIndex()!=-1){
