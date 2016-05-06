@@ -10,7 +10,7 @@ public class Archivo implements Analizable {
 	private File archivo;
 	
 	//Constructor
-	public Archivo(File archivo){
+	public Archivo(File archivo) {
 		this.cantidadDeLineas=0L;
 		this.cantidadLineasComentadas=0L;
 		this.cantidadLineasEnBlanco=0L;
@@ -31,7 +31,7 @@ public class Archivo implements Analizable {
 		return cantidadLineasEnBlanco;
 	}
 	
-	public Long getCantidadLineasDeCodigo(){
+	public Long getCantidadLineasDeCodigo() {
 		return this.cantidadDeLineas-this.cantidadLineasComentadas-this.cantidadLineasEnBlanco;
 	}
 	
@@ -39,39 +39,42 @@ public class Archivo implements Analizable {
 		return archivo;
 	}
 	
-	public String toString()
-	{
+	public String toString() {
 		return "Archivo: "+archivo.getName()+"\n\tComentarios: "+cantidadLineasComentadas+"\n\tBlanco: "+cantidadLineasEnBlanco+"\n\tCodigo: "+getCantidadLineasDeCodigo()+"\n\tTotal: "+cantidadDeLineas;
 	}
 	
 	public void analizar() {
 		FileReader fr = null;
 		BufferedReader br = null;
-		try{
+		try {
 			String linea;
 			fr = new FileReader(archivo);
 			br= new BufferedReader(fr);
 			linea = br.readLine();
-			while(linea != null){
-				linea= linea.trim();
-				if(linea.startsWith("/*")){
-//					this.cantidadLineasComentadas ++;
-//					this.cantidadDeLineas++;
-//					linea=br.readLine();
-					while(linea!=null&&!linea.endsWith("*/")){
+			while(linea != null) {
+				linea = linea.trim();
+				if(linea.startsWith("/*")) {
+					while(linea!=null && !linea.endsWith("*/")) {
 						linea = linea.trim();
-						this.cantidadLineasComentadas ++;
+						if(linea.isEmpty()) {
+							cantidadLineasEnBlanco++;
+						}
+						else {
+							this.cantidadLineasComentadas++;
+						}
 						this.cantidadDeLineas++;
 						linea=br.readLine();
 					}
-					this.cantidadLineasComentadas ++;
-					this.cantidadDeLineas++;
+					if(linea != null) {
+						this.cantidadLineasComentadas++;
+						this.cantidadDeLineas++;
+					}
 				}
-				else if(linea.startsWith("//")){
+				else if(linea.startsWith("//")) {
 					cantidadLineasComentadas++;
 					this.cantidadDeLineas++;
 				}
-				else if(linea.isEmpty()){
+				else if(linea.isEmpty()) {
 					cantidadLineasEnBlanco++;
 					this.cantidadDeLineas++;
 				}
@@ -81,13 +84,11 @@ public class Archivo implements Analizable {
 			}
 			System.out.println(this);
 			System.out.println("FIN");
-			//
-			
-		}catch(IOException e){
+		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		finally{
-			if(fr!=null){
+		finally {
+			if(fr!=null) {
 				try {
 					fr.close();
 				} catch (IOException e) {
