@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
-import javax.swing.JScrollPane;
 
 public class GUI extends JFrame {
 
@@ -28,14 +27,11 @@ public class GUI extends JFrame {
 	private JLabel lblLines;	
 	private JLabel lblBlanks;	
 	private JLabel lblComment;
-	private JLabel lblMulticomment;
 	private JLabel lblFile;
 	private JLabel lblTotalLines;
-	private String extension;
+	//private String extension;
 	
-	/**
-	 * Launch the application.
-	 */
+	//Application
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -49,9 +45,7 @@ public class GUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
+	//Constructor
 	public GUI() {
 		setResizable(false);
 		setTitle("Herramienta de Testing (Grupo 11)");
@@ -78,26 +72,8 @@ public class GUI extends JFrame {
 				int returnVal = fc.showOpenDialog(frame);
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
-		            //Verificar si es una carpeta o un archivo
-		            Analizable a;
-		            if(file.isDirectory())
-		            	a = new Carpeta(file);
-		            else
-		            	a = new Archivo(file);
-		            a.analizar();
-//		            ClaseJava claseJava = new ClaseJava(file);
-		            lblFile.setText(file.getAbsolutePath());
-		            lblLines.setText(a.getCantidadLineasDeCodigo().toString());
-		        	lblBlanks.setText(String.valueOf(a.getCantidadLineasEnBlanco()));
-		        	lblComment.setText(String.valueOf(a.getCantidadLineasComentadas()));
-		        	//lblMulticomment;
-		        	lblTotalLines.setText(String.valueOf(a.getCantidadDeLineas()));
-		            //This is where a real application would open the file.
-		            //log.append("Opening: " + file.getName() + "." + newline);
-		        } else {
-		            //log.append("Open command cancelled by user." + newline);
+		            analizarCodigo(file);
 		        }
-				
 			}
 		});
 		mnArchivo.add(mntmAnalizarArchivo);
@@ -138,10 +114,6 @@ public class GUI extends JFrame {
 		lblComentariosDeLnea.setBounds(10, 165, 179, 14);
 		contentPane.add(lblComentariosDeLnea);
 		
-		//JLabel lblComentariosMultilnea = new JLabel("Comentarios multil\u00EDnea");
-		//lblComentariosMultilnea.setBounds(10, 190, 131, 14);
-		//contentPane.add(lblComentariosMultilnea);
-		
 		JLabel lblArchivo = new JLabel("Archivo:");
 		lblArchivo.setBounds(10, 11, 46, 14);
 		contentPane.add(lblArchivo);
@@ -171,10 +143,6 @@ public class GUI extends JFrame {
 		lblComment.setBounds(124, 165, 121, 14);
 		contentPane.add(lblComment);
 		
-		//lblMulticomment = new JLabel("");
-		//lblMulticomment.setBounds(135, 190, 79, 14);
-		//contentPane.add(lblMulticomment);
-		
 		JSeparator separator = new JSeparator();
 		separator.setBounds(10, 128, 115, 14);
 		contentPane.add(separator);
@@ -190,12 +158,25 @@ public class GUI extends JFrame {
 		JSeparator separator_4 = new JSeparator();
 		separator_4.setBounds(10, 103, 115, 14);
 		contentPane.add(separator_4);
-		
-		
-		
+
 		//JSeparator separator_3 = new JSeparator();
 		//separator_3.setBounds(10, 203, 206, 14);
 		//contentPane.add(separator_3);
+	}
+	
+	private void analizarCodigo(File file) {
+		Analizable a;
+		//Verificar si es una carpeta o un archivo
+        if(file.isDirectory())
+        	a = new Carpeta(file);
+        else
+        	a = new Archivo(file);
+        a.analizar();
+        lblFile.setText(file.getAbsolutePath());
+        lblLines.setText(a.getCantidadLineasDeCodigo().toString());
+    	lblBlanks.setText(String.valueOf(a.getCantidadLineasEnBlanco()));
+    	lblComment.setText(String.valueOf(a.getCantidadLineasComentadas()));
+    	lblTotalLines.setText(String.valueOf(a.getCantidadDeLineas()));
 	}
 	
 	private void confirmarSalir() {
@@ -206,7 +187,7 @@ public class GUI extends JFrame {
 		}
 	}
 	
-	public void setLenguaje(String lang) {
+	/*public void setLenguaje(String lang) {
 		extension = lang;
-	}
+	}*/
 }
