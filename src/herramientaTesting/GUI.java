@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.LineNumberInputStream;
+import java.util.*;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -18,6 +20,14 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
+import javax.swing.JTextArea;
+import javax.swing.JList;
+import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class GUI extends JFrame {
 
@@ -29,6 +39,14 @@ public class GUI extends JFrame {
 	private JLabel lblComment;
 	private JLabel lblFile;
 	private JLabel lblTotalLines;
+	private Stack <Analizable> pila;
+	private JList<String> listCarpetas;
+	private JList<String> listContenido;
+	private DefaultListModel<String> listModelCarpetas;
+	private DefaultListModel<String> listModelContenido;
+	private ArrayList<Analizable>listaContenido;
+	private File archivo;
+	private Analizable carpetaBase;
 	//private String extension;
 	
 	//Application
@@ -64,6 +82,9 @@ public class GUI extends JFrame {
 		JMenu mnArchivo = new JMenu("Archivo");
 		menuBar.add(mnArchivo);
 		
+		pila = new Stack<Analizable>();
+		listaContenido = new ArrayList<Analizable>();
+		
 		JMenuItem mntmAnalizarArchivo = new JMenuItem("Analizar archivo...");
 		mntmAnalizarArchivo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -71,8 +92,8 @@ public class GUI extends JFrame {
 				fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				int returnVal = fc.showOpenDialog(frame);
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
-		            File file = fc.getSelectedFile();
-		            analizarCodigo(file);
+		            archivo = fc.getSelectedFile();
+		            analizarCodigo(archivo);
 		        }
 			}
 		});
@@ -103,15 +124,15 @@ public class GUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblLneasDeCdigo = new JLabel("L\u00EDneas de c\u00F3digo");
-		lblLneasDeCdigo.setBounds(10, 115, 115, 14);
+		lblLneasDeCdigo.setBounds(10, 211, 115, 14);
 		contentPane.add(lblLneasDeCdigo);
 		
 		JLabel lblLneasEnBlanco = new JLabel("L\u00EDneas en blanco");
-		lblLneasEnBlanco.setBounds(10, 140, 115, 14);
+		lblLneasEnBlanco.setBounds(10, 236, 115, 14);
 		contentPane.add(lblLneasEnBlanco);
 		
 		JLabel lblComentariosDeLnea = new JLabel("Comentarios");
-		lblComentariosDeLnea.setBounds(10, 165, 179, 14);
+		lblComentariosDeLnea.setBounds(10, 261, 179, 14);
 		contentPane.add(lblComentariosDeLnea);
 		
 		JLabel lblArchivo = new JLabel("Archivo:");
@@ -119,12 +140,12 @@ public class GUI extends JFrame {
 		contentPane.add(lblArchivo);
 		
 		JLabel lblLneasTotales = new JLabel("L\u00EDneas totales");
-		lblLneasTotales.setBounds(10, 90, 115, 14);
+		lblLneasTotales.setBounds(10, 186, 115, 14);
 		contentPane.add(lblLneasTotales);
 		
 		lblTotalLines = new JLabel("");
 		lblTotalLines.setBackground(Color.GRAY);
-		lblTotalLines.setBounds(124, 90, 121, 14);
+		lblTotalLines.setBounds(124, 186, 121, 14);
 		contentPane.add(lblTotalLines);
 		
 		lblFile = new JLabel("");
@@ -132,32 +153,102 @@ public class GUI extends JFrame {
 		contentPane.add(lblFile);
 		
 		lblLines = new JLabel("");
-		lblLines.setBounds(124, 115, 121, 14);
+		lblLines.setBounds(124, 211, 121, 14);
 		contentPane.add(lblLines);
 		
 		lblBlanks = new JLabel("");
-		lblBlanks.setBounds(124, 140, 121, 14);
+		lblBlanks.setBounds(124, 236, 121, 14);
 		contentPane.add(lblBlanks);
 		
 		lblComment = new JLabel("");
-		lblComment.setBounds(124, 165, 121, 14);
+		lblComment.setBounds(124, 261, 121, 14);
 		contentPane.add(lblComment);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 128, 115, 14);
+		separator.setBounds(10, 224, 115, 14);
 		contentPane.add(separator);
 		
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 153, 115, 14);
+		separator_1.setBounds(10, 249, 115, 14);
 		contentPane.add(separator_1);
 		
 		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(10, 178, 115, 14);
+		separator_2.setBounds(10, 274, 115, 14);
 		contentPane.add(separator_2);
 		
 		JSeparator separator_4 = new JSeparator();
-		separator_4.setBounds(10, 103, 115, 14);
+		separator_4.setBounds(10, 199, 115, 14);
 		contentPane.add(separator_4);
+		
+		listModelCarpetas = new DefaultListModel<String>();
+		listCarpetas= new JList<String>(listModelCarpetas);
+		listCarpetas.setEnabled(false);
+		listCarpetas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listCarpetas.setBounds(20, 36, 187, 119);
+		contentPane.add(listCarpetas);
+		
+		listModelContenido = new DefaultListModel<String>();
+		listContenido = new JList<String>(listModelContenido);
+		listContenido.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				
+				String aux = listContenido.getSelectedValue();
+				Analizable auxAn=carpetaBase;;
+				for(Analizable an:listaContenido){
+					if(an.getFile().getName().equals(aux))
+						{
+						auxAn=an;
+							break;
+						}
+				}
+				
+		        lblLines.setText(auxAn.getCantidadLineasDeCodigo().toString());
+		    	lblBlanks.setText(String.valueOf(auxAn.getCantidadLineasEnBlanco()));
+		    	lblComment.setText(String.valueOf(auxAn.getCantidadLineasComentadas()));
+		    	lblTotalLines.setText(String.valueOf(auxAn.getCantidadDeLineas()));
+			}
+		});
+		listContenido.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listContenido.setBounds(296, 36, 164, 119);
+		contentPane.add(listContenido);
+		
+		JButton btnAbrirCarpeta = new JButton("Abrir");
+		btnAbrirCarpeta.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(!listaContenido.isEmpty()&&listContenido.getSelectedIndex()!=-1){
+					String aux = listContenido.getSelectedValue();
+					pila.push(carpetaBase);
+					for(Analizable an:listaContenido){
+						if(an.getFile().getName().equals(aux))
+							{
+								carpetaBase=an;
+								break;
+							}
+					}
+					listaContenido.clear();
+					listModelContenido.clear();
+					listModelCarpetas.clear();
+					actualizarListas(carpetaBase);
+				}
+			}
+		});
+		btnAbrirCarpeta.setBounds(217, 36, 69, 23);
+		contentPane.add(btnAbrirCarpeta);
+		
+		JButton btnAtras = new JButton("Atras");
+		btnAtras.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(!pila.isEmpty()){
+					listaContenido.clear();
+					listModelContenido.clear();
+					listModelCarpetas.clear();
+					carpetaBase=pila.pop();
+					actualizarListas(carpetaBase);
+				}
+			}
+		});
+		btnAtras.setBounds(217, 70, 69, 23);
+		contentPane.add(btnAtras);
 
 		//JSeparator separator_3 = new JSeparator();
 		//separator_3.setBounds(10, 203, 206, 14);
@@ -165,18 +256,42 @@ public class GUI extends JFrame {
 	}
 	
 	private void analizarCodigo(File file) {
-		Analizable a;
 		//Verificar si es una carpeta o un archivo
-        if(file.isDirectory())
-        	a = new Carpeta(file);
-        else
-        	a = new Archivo(file);
-        a.analizar();
+        if(file.isDirectory()){
+        	carpetaBase = new Carpeta(file);
+        	listModelCarpetas.addElement(carpetaBase.getFile().getName());
+        	listaContenido.clear();
+        	for(Analizable an:((Carpeta)carpetaBase).getContenido()){
+				listModelContenido.addElement(an.getFile().getName());
+				listaContenido.add(an);
+			}
+        }
+        else{
+        	carpetaBase = new Archivo(file);
+        	listaContenido.clear();
+        	listModelCarpetas.addElement(carpetaBase.getFile().getName());
+        }
+        carpetaBase.analizar();
         lblFile.setText(file.getAbsolutePath());
-        lblLines.setText(a.getCantidadLineasDeCodigo().toString());
-    	lblBlanks.setText(String.valueOf(a.getCantidadLineasEnBlanco()));
-    	lblComment.setText(String.valueOf(a.getCantidadLineasComentadas()));
-    	lblTotalLines.setText(String.valueOf(a.getCantidadDeLineas()));
+        lblLines.setText(carpetaBase.getCantidadLineasDeCodigo().toString());
+    	lblBlanks.setText(String.valueOf(carpetaBase.getCantidadLineasEnBlanco()));
+    	lblComment.setText(String.valueOf(carpetaBase.getCantidadLineasComentadas()));
+    	lblTotalLines.setText(String.valueOf(carpetaBase.getCantidadDeLineas()));
+	}
+	
+	private void actualizarListas(Analizable a){
+		if(carpetaBase.getFile().isDirectory()){
+			listModelCarpetas.addElement(carpetaBase.getFile().getName());
+        	listaContenido.clear();
+        	for(Analizable an:((Carpeta)carpetaBase).getContenido()){
+				listModelContenido.addElement(an.getFile().getName());
+				listaContenido.add(an);
+			}
+		}
+		 else{
+	        	listaContenido.clear();
+	        	listModelCarpetas.addElement(carpetaBase.getFile().getName());
+	        }
 	}
 	
 	private void confirmarSalir() {
@@ -186,8 +301,4 @@ public class GUI extends JFrame {
 			frame.dispose();
 		}
 	}
-	
-	/*public void setLenguaje(String lang) {
-		extension = lang;
-	}*/
 }
