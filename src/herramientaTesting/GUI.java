@@ -189,6 +189,10 @@ public class GUI extends JFrame {
 	}	
 	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
+		if(scrollPane!=null)
+			contentPane.remove(scrollPane);
+		if(arbolDirectorios!=null)
+			scrollPane.remove(arbolDirectorios);
         if(file.isDirectory()){
         	carpetaBase = new Carpeta(file);
         }
@@ -202,6 +206,8 @@ public class GUI extends JFrame {
         scrollPane.add(arbolDirectorios);
         scrollPane.setViewportView(arbolDirectorios);
         carpetaBase.analizar();
+        actualizarLineas(carpetaBase);
+        textFieldActual.setText(carpetaBase.getFile().getName());
         lblFile.setText(file.getAbsolutePath());
         arbolDirectorios.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
