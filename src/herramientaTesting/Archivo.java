@@ -42,6 +42,10 @@ public class Archivo implements Analizable {
 		return archivo;
 	}
 	
+	public boolean isDirectory() {
+		return archivo.isDirectory();
+	}
+	
 	public String toString() {
 		return archivo.getName();
 	}
@@ -56,9 +60,12 @@ public class Archivo implements Analizable {
 		return this.nodo;
 	}
 	
-	public void analizar() {
+	public void analizar(Opciones opciones) {
 		FileReader fr = null;
 		BufferedReader br = null;
+		this.cantidadDeLineas=0L;
+		this.cantidadLineasComentadas=0L;
+		this.cantidadLineasEnBlanco=0L;
 		try {
 			String linea;
 			fr = new FileReader(archivo);
@@ -69,12 +76,16 @@ public class Archivo implements Analizable {
 				if(linea.startsWith("/*")) {
 					while(linea!=null && !linea.endsWith("*/")) {
 						linea = linea.trim();
-						if(linea.isEmpty()) {
-							cantidadLineasEnBlanco++;
+						if(opciones.getBlancosMultilinea()){
+							if(linea.isEmpty()) {
+								cantidadLineasEnBlanco++;
+							}
+							else {
+								this.cantidadLineasComentadas++;
+							}
 						}
-						else {
+						else
 							this.cantidadLineasComentadas++;
-						}
 						this.cantidadDeLineas++;
 						linea=br.readLine();
 					}

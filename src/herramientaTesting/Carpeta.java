@@ -56,6 +56,10 @@ public class Carpeta implements Analizable {
 		return carpeta;
 	}
 	
+	public boolean isDirectory() {
+		return carpeta.isDirectory();
+	}
+	
 	public ArrayList<Analizable> getContenido(){
 		return contenido;
 	}
@@ -77,10 +81,13 @@ public class Carpeta implements Analizable {
 		return this.nodo;
 	}
 	
-	public void analizar(){
+	public void analizar(Opciones opciones){
+		this.cantidadDeLineas=0L;
+		this.cantidadLineasComentadas=0L;
+		this.cantidadLineasEnBlanco=0L;
 		for(Iterator<Analizable>cont=contenido.iterator();cont.hasNext();){
 			Analizable a=cont.next();
-			a.analizar();
+			a.analizar(opciones);
 			cantidadDeLineas+=a.getCantidadDeLineas();
 			cantidadLineasComentadas+=a.getCantidadLineasComentadas();
 			cantidadLineasEnBlanco+=a.getCantidadLineasEnBlanco();

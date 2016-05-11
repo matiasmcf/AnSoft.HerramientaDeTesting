@@ -43,7 +43,8 @@ public class GUI extends JFrame {
 	private JTree arbolDirectorios;
 	private JScrollPane scrollPane;
 	private JTextField textFieldActual;
-	//private String extension;
+	//
+	private Opciones opciones;
 	
 	//Application
 	public static void main(String[] args) {
@@ -77,6 +78,9 @@ public class GUI extends JFrame {
 		
 		JMenu mnArchivo = new JMenu("Archivo");
 		menuBar.add(mnArchivo);
+		
+		opciones = new Opciones(Lenguajes.JAVA,false);
+		
 		JMenuItem mntmAnalizarArchivo = new JMenuItem("Analizar archivo...");
 		mntmAnalizarArchivo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -103,13 +107,58 @@ public class GUI extends JFrame {
 		menuBar.add(mnLenguaje);
 		
 		JMenuItem mntmC = new JMenuItem("C");
+		mntmC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				opciones.setLenguaje(Lenguajes.C);
+			}
+		});
 		mnLenguaje.add(mntmC);
 		
-		JMenuItem mntmC_1 = new JMenuItem("C++");
-		mnLenguaje.add(mntmC_1);
+		JMenuItem mntmCPP = new JMenuItem("C++");
+		mntmCPP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				opciones.setLenguaje(Lenguajes.CPP);
+			}
+		});
+		mnLenguaje.add(mntmCPP);
 		
 		JMenuItem mntmJava = new JMenuItem("Java");
+		mntmJava.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				opciones.setLenguaje(Lenguajes.JAVA);
+			}
+		});
 		mnLenguaje.add(mntmJava);
+		
+		JMenu mnComentarios = new JMenu("Comentarios");
+		menuBar.add(mnComentarios);
+		
+		JMenu mnMultilinea = new JMenu("Multilinea");
+		mnComentarios.add(mnMultilinea);
+		
+		JMenuItem mntmContarBlancosComoComentarios = new JMenuItem("Contar blancos como comentarios");
+		mntmContarBlancosComoComentarios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				opciones.setBlancosMultilinea(false);
+				carpetaBase.analizar(opciones);
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) arbolDirectorios.getLastSelectedPathComponent();
+            	Analizable an = (Analizable) selectedNode.getUserObject();
+            	actualizarLineas(an);
+			}
+		});
+		mnMultilinea.add(mntmContarBlancosComoComentarios);
+		
+		JMenuItem mntmContarBlancosAparte = new JMenuItem("Contar blancos como lineas en blanco");
+		mntmContarBlancosAparte.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				opciones.setBlancosMultilinea(true);
+				carpetaBase.analizar(opciones);
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) arbolDirectorios.getLastSelectedPathComponent();
+            	Analizable an = (Analizable) selectedNode.getUserObject();
+            	actualizarLineas(an);
+			}
+		});
+		mnMultilinea.add(mntmContarBlancosAparte);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -205,7 +254,7 @@ public class GUI extends JFrame {
 		contentPane.add(scrollPane);
         scrollPane.add(arbolDirectorios);
         scrollPane.setViewportView(arbolDirectorios);
-        carpetaBase.analizar();
+        carpetaBase.analizar(opciones);
         actualizarLineas(carpetaBase);
         textFieldActual.setText(carpetaBase.getFile().getName());
         lblFile.setText(file.getAbsolutePath());
