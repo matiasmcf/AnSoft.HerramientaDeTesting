@@ -61,11 +61,16 @@ public class Archivo implements Analizable {
 	}
 	
 	public void analizar(Opciones opciones) {
-		FileReader fr = null;
-		BufferedReader br = null;
 		this.cantidadDeLineas=0L;
 		this.cantidadLineasComentadas=0L;
 		this.cantidadLineasEnBlanco=0L;
+		//Validacion de tipo de archivo
+		if(!archivo.getName().endsWith(opciones.getExtension())){
+			return;
+		}
+		//
+		FileReader fr = null;
+		BufferedReader br = null;
 		try {
 			String linea;
 			fr = new FileReader(archivo);

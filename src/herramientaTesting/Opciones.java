@@ -45,4 +45,11 @@ public class Opciones {
 	public Lenguajes getLenguaje(){
 		return lenguaje;
 	}
+	
+	/**
+	 * @return Extension del lenguaje seleccionado
+	 */
+	public String getExtension(){
+		return lenguaje.getExtension();
+	}
 }

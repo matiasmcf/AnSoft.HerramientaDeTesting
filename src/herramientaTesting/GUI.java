@@ -45,6 +45,8 @@ public class GUI extends JFrame {
 	private JTextField textFieldActual;
 	//
 	private Opciones opciones;
+	private boolean permitirAnalizar;
+	private JTextField textFieldLenguaje;
 	
 	//Application
 	public static void main(String[] args) {
@@ -79,7 +81,20 @@ public class GUI extends JFrame {
 		JMenu mnArchivo = new JMenu("Archivo");
 		menuBar.add(mnArchivo);
 		
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		textFieldLenguaje = new JTextField();
+		textFieldLenguaje.setEditable(false);
+		textFieldLenguaje.setBounds(350, 36, 169, 27);
+		contentPane.add(textFieldLenguaje);
+		textFieldLenguaje.setColumns(10);
+		
 		opciones = new Opciones(Lenguajes.JAVA,false);
+		permitirAnalizar=false;
+		textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
 		
 		JMenuItem mntmAnalizarArchivo = new JMenuItem("Analizar archivo...");
 		mntmAnalizarArchivo.addActionListener(new ActionListener() {
@@ -90,6 +105,7 @@ public class GUI extends JFrame {
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            archivo = fc.getSelectedFile();
 		            analizarPath(archivo);
+		            permitirAnalizar=true;
 		        }
 			}
 		});
@@ -110,6 +126,8 @@ public class GUI extends JFrame {
 		mntmC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				opciones.setLenguaje(Lenguajes.C);
+				textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
+				actualizarAnalisis();
 			}
 		});
 		mnLenguaje.add(mntmC);
@@ -118,6 +136,8 @@ public class GUI extends JFrame {
 		mntmCPP.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				opciones.setLenguaje(Lenguajes.CPP);
+				textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
+				actualizarAnalisis();
 			}
 		});
 		mnLenguaje.add(mntmCPP);
@@ -126,6 +146,8 @@ public class GUI extends JFrame {
 		mntmJava.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				opciones.setLenguaje(Lenguajes.JAVA);
+				textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
+				actualizarAnalisis();
 			}
 		});
 		mnLenguaje.add(mntmJava);
@@ -140,10 +162,7 @@ public class GUI extends JFrame {
 		mntmContarBlancosComoComentarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				opciones.setBlancosMultilinea(false);
-				carpetaBase.analizar(opciones);
-				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) arbolDirectorios.getLastSelectedPathComponent();
-            	Analizable an = (Analizable) selectedNode.getUserObject();
-            	actualizarLineas(an);
+				actualizarAnalisis();
 			}
 		});
 		mnMultilinea.add(mntmContarBlancosComoComentarios);
@@ -152,17 +171,10 @@ public class GUI extends JFrame {
 		mntmContarBlancosAparte.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				opciones.setBlancosMultilinea(true);
-				carpetaBase.analizar(opciones);
-				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) arbolDirectorios.getLastSelectedPathComponent();
-            	Analizable an = (Analizable) selectedNode.getUserObject();
-            	actualizarLineas(an);
+				actualizarAnalisis();
 			}
 		});
 		mnMultilinea.add(mntmContarBlancosAparte);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
 		
 		JLabel lblLneasDeCdigo = new JLabel("L\u00EDneas de c\u00F3digo");
 		lblLneasDeCdigo.setBounds(284, 150, 115, 14);
@@ -229,12 +241,14 @@ public class GUI extends JFrame {
 		textFieldActual = new JTextField();
 		textFieldActual.setEditable(false);
 		textFieldActual.setBackground(SystemColor.control);
-		textFieldActual.setBounds(340, 88, 179, 26);
+		textFieldActual.setBounds(350, 88, 169, 26);
 		contentPane.add(textFieldActual);
 		textFieldActual.setColumns(10);
-		//JSeparator separator_3 = new JSeparator();
-		//separator_3.setBounds(10, 203, 206, 14);
-		//contentPane.add(separator_3);
+		
+		JLabel lblLenguaje = new JLabel("Lenguaje:");
+		lblLenguaje.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblLenguaje.setBounds(284, 36, 60, 27);
+		contentPane.add(lblLenguaje);
 	}	
 	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
@@ -249,6 +263,7 @@ public class GUI extends JFrame {
         	carpetaBase = new Archivo(file);
         }
         arbolDirectorios = new JTree(carpetaBase.colocarEnArbol(new DefaultMutableTreeNode()));
+        arbolDirectorios.setSelectionRow(0); //Selecciona la raiz del arbol por defecto
         scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 48, 179, 265);
 		contentPane.add(scrollPane);
@@ -288,5 +303,14 @@ public class GUI extends JFrame {
 		if(option == JOptionPane.YES_OPTION) {
 			frame.dispose();
 		}
+	}
+	
+	private void actualizarAnalisis(){
+		if(!permitirAnalizar)
+			return;
+		carpetaBase.analizar(opciones);
+		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) arbolDirectorios.getLastSelectedPathComponent();
+    	Analizable an = (Analizable) selectedNode.getUserObject();
+    	actualizarLineas(an);
 	}
 }

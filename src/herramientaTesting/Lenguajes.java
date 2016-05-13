@@ -2,24 +2,30 @@ package herramientaTesting;
 
 public enum Lenguajes {
 	//Valores
-	JAVA(0,"Java"),
-	C(1,"C"),
-	CPP(2,"C++")
+	JAVA(0,"Java",".java"),
+	C(1,"C",".c"),
+	CPP(2,"C++",".cpp")
 	;
 	
 	//Campos
 	private int valor;
 	private String nombre;
+	private String extension;
 	
 	//Constructor
-	private Lenguajes(int val, String nom){
+	private Lenguajes(int val,String nomb, String ext){
 		valor=val;
-		nombre=nom;
+		extension=ext;
+		nombre=nomb;
 	}
 	
 	//Metodos
 	public int getValor(){
 		return valor;
+	}
+	
+	public String getExtension(){
+		return extension;
 	}
 	
 	public String getNombre(){
