@@ -47,5 +47,5 @@ Temporary Items
 .apdisk
 
 # Code
-bin/
+./bin/
 *.class
