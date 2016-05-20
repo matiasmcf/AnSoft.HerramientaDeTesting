@@ -20,6 +20,16 @@ public class Clase {
 		nombre = name;
 	}
 	
+	public Long getCantidadDeLineas() {
+		return cantidadDeLineas;
+	}
+	public Long getCantidadLineasComentadas() {
+		return cantidadLineasComentadas;
+	}
+	public Long getCantidadLineasEnBlanco() {
+		return cantidadLineasEnBlanco;
+	}
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -99,6 +109,9 @@ public class Clase {
 					if(metodoAnalizado != null) {
 						metodos.add(metodoAnalizado);
 						br = metodoAnalizado.analizar(br);
+						cantidadDeLineas += metodoAnalizado.getCantidadDeLineas();
+						cantidadLineasComentadas += metodoAnalizado.getCantidadLineasComentadas();
+						cantidadLineasEnBlanco += metodoAnalizado.getCantidadLineasEnBlanco();
 					}
 				}
 				linea = br.readLine();

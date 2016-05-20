@@ -141,6 +141,9 @@ public class Archivo implements Analizable {
 					if(claseAnalizada != null) {
 						//aca analizo los metodos
 						br = claseAnalizada.analizar(br);
+						cantidadDeLineas += claseAnalizada.getCantidadDeLineas();
+						cantidadLineasComentadas += claseAnalizada.getCantidadLineasComentadas();
+						cantidadLineasEnBlanco += claseAnalizada.getCantidadLineasEnBlanco();
 					}
 				}
 				linea = br.readLine();

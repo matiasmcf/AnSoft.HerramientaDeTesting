@@ -20,6 +20,16 @@ public class Metodo {
 		cuerpo = body;
 	}
 	
+	public Long getCantidadDeLineas() {
+		return cantidadDeLineas;
+	}
+	public Long getCantidadLineasComentadas() {
+		return cantidadLineasComentadas;
+	}
+	public Long getCantidadLineasEnBlanco() {
+		return cantidadLineasEnBlanco;
+	}
+	
 	public String getNombre() {
 		return nombre;
 	}
