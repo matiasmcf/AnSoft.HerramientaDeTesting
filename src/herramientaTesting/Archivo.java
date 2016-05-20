@@ -83,7 +83,7 @@ public class Archivo implements Analizable {
 		try {
 			String linea;
 			fr = new FileReader(archivo);
-			br= new BufferedReader(fr);
+			br = new BufferedReader(fr);
 			linea = br.readLine();
 			while(linea != null) {
 				linea = linea.trim();
@@ -129,6 +129,7 @@ public class Archivo implements Analizable {
 					}
 					if(claseAnalizada != null) {
 						//aca analizo los metodos
+						br = claseAnalizada.analizar(br);
 					}
 				}
 				linea = br.readLine();
