@@ -1,8 +1,13 @@
 package herramientaTesting;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import clase.Clase;
 
 public class Archivo implements Analizable {
 	//Atributos
@@ -111,8 +116,21 @@ public class Archivo implements Analizable {
 					cantidadLineasEnBlanco++;
 					this.cantidadDeLineas++;
 				}
-				else
+				else /* Encontro una linea de codigo */{
 					this.cantidadDeLineas++;
+					String [] classSignature = linea.split(" ");
+					Clase claseAnalizada = null;
+					for(int i = 0; i < classSignature.length; i++) {
+						if(classSignature[i].equals("class")) {
+							claseAnalizada = new Clase(classSignature[i+1]);
+							System.out.println("Encontre una clase llamada "+classSignature[i+1]);
+							break;
+						}
+					}
+					if(claseAnalizada != null) {
+						//aca analizo los metodos
+					}
+				}
 				linea = br.readLine();
 			}
 		} catch(IOException e) {
