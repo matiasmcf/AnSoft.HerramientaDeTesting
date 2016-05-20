@@ -1,5 +1,8 @@
 package metodo;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+
 public class Metodo {
 	private String nombre;
 	private String cuerpo;
@@ -29,7 +32,72 @@ public class Metodo {
 		return ((double)cantidadLineasComentadas/(double)(100*(cantidadDeLineas-cantidadLineasEnBlanco)));
 	}
 	
-	public void analizar() {
-		
+	public BufferedReader analizar(BufferedReader br) {
+		this.cantidadDeLineas=0L;
+		this.cantidadLineasComentadas=0L;
+		this.cantidadLineasEnBlanco=0L;
+		//Validacion de tipo de archivo
+		/*if(!archivo.getName().endsWith(opciones.getExtension())){
+			return;
+		}*/
+		//
+		//FileReader fr = null;
+		//BufferedReader br = null;
+		try {
+			String linea;
+			//fr = new FileReader(archivo);
+			//br = new BufferedReader(fr);
+			linea = br.readLine();
+			while(linea != null && !linea.endsWith("}")) {
+				linea = linea.trim();
+				if(linea.startsWith("/*")) {
+					while(linea!=null && !linea.endsWith("*/")) {
+						linea = linea.trim();
+						//if(opciones.getBlancosMultilinea()){
+							if(linea.isEmpty()) {
+								cantidadLineasEnBlanco++;
+							}
+							else {
+								this.cantidadLineasComentadas++;
+							}
+						//}
+						//else
+							//this.cantidadLineasComentadas++;
+						this.cantidadDeLineas++;
+						linea=br.readLine();
+					}
+					if(linea != null) {
+						this.cantidadLineasComentadas++;
+						this.cantidadDeLineas++;
+					}
+				}
+				else if(linea.startsWith("//")) {
+					cantidadLineasComentadas++;
+					this.cantidadDeLineas++;
+				}
+				else if(linea.isEmpty()) {
+					cantidadLineasEnBlanco++;
+					this.cantidadDeLineas++;
+				}
+				else /* Encontro una linea de codigo */{
+					this.cantidadDeLineas++;
+					//
+				}
+				linea = br.readLine();
+			}
+			return br;
+		} catch(IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		/*finally {
+			if(fr!=null) {
+				try {
+					fr.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}*/
 	}
 }
