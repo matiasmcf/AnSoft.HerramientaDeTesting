@@ -1,6 +1,8 @@
 package herramientaTesting;
 
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -11,27 +13,30 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import java.awt.Color;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.JList;
-import javax.swing.UIManager;
-import javax.swing.JTextPane;
-import javax.swing.JTextArea;
-import java.awt.SystemColor;
+
+import clase.Clase;
+import metodo.Metodo;
+import javax.swing.ScrollPaneConstants;
 
 public class GUI extends JFrame {
 
@@ -59,10 +64,10 @@ public class GUI extends JFrame {
 	private JLabel labelFanIn;
 	private JLabel labelComplejidad;
 	//Listas
-	private JList listaMetodos;
-	private JList listaClases;
-	private DefaultListModel<String> listModelClases;
-	private DefaultListModel<String> listModelMetodos;
+	private JList<Metodo> listaMetodos;
+	private JList<Clase> listaClases;
+	private DefaultListModel<Clase> listModelClases;
+	private DefaultListModel<Metodo> listModelMetodos;
 	
 	//Application
 	public static void main(String[] args) {
@@ -258,13 +263,15 @@ public class GUI extends JFrame {
 		contentPane.add(lblLenguaje);
 		
 		JScrollPane scrollPaneMetodos = new JScrollPane();
+		scrollPaneMetodos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPaneMetodos.setBounds(452, 62, 140, 196);
 		contentPane.add(scrollPaneMetodos);
 		
-		listModelMetodos = new DefaultListModel<String>();
-		listaMetodos = new JList<String>(listModelMetodos);
+		listModelMetodos = new DefaultListModel<Metodo>();
+		listaMetodos = new JList<Metodo>(listModelMetodos);
 		listaMetodos.setBackground(SystemColor.control);
 		listaMetodos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPaneMetodos.add(listaMetodos);
 		scrollPaneMetodos.setRowHeaderView(listaMetodos);
 		
 		JLabel lblMetodos = new JLabel("Metodos:");
@@ -273,13 +280,21 @@ public class GUI extends JFrame {
 		contentPane.add(lblMetodos);
 		
 		JScrollPane scrollPaneClases = new JScrollPane();
+		scrollPaneClases.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPaneClases.setBounds(249, 62, 140, 196);
 		contentPane.add(scrollPaneClases);
 		
-		listModelClases = new DefaultListModel<String>();
-		listaClases = new JList<String>(listModelClases);
+		listModelClases = new DefaultListModel<Clase>();
+		listaClases = new JList<Clase>(listModelClases);
+		listaClases.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(e.getValueIsAdjusting()==false)
+					actualizarListaMetodos(listaClases.getSelectedValue());
+			}
+		});
 		listaClases.setBackground(SystemColor.control);
 		listaMetodos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPaneClases.add(listaClases);
 		scrollPaneClases.setRowHeaderView(listaClases);
 		
 		JLabel lblClases = new JLabel("Clases:");
@@ -412,7 +427,8 @@ public class GUI extends JFrame {
             	Analizable an = (Analizable) selectedNode.getUserObject();
             	actualizarLineas(an);
             	labelActual.setText(an.getFile().getName());
-            	actualizarListaClases(selectedNode);
+            	if(!(an.isDirectory()))
+            		actualizarListaClases((Archivo)an);
             }
         });
         arbolDirectorios.addTreeExpansionListener(new TreeExpansionListener() {
@@ -448,10 +464,28 @@ public class GUI extends JFrame {
     	actualizarLineas(an);
 	}
 	
-	private void actualizarListaClases(DefaultMutableTreeNode nodo){
+	private void actualizarListaClases(Archivo a){
+		System.out.println("ACTUALIZANDO LISTA DE CLASES");
 		listModelClases.clear();
-		for(int i=0;i<nodo.getChildCount();i++){
-			listModelClases.addElement(nodo.getChildAt(i).toString());
+		if(a.getClase()==null)
+			System.out.println("CLASE NULA");
+		else
+			System.out.println("CLASE: "+a.getClase().getNombre());
+		listModelClases.addElement(a.getClase());
+//		for(int i=0;i<nodo.getChildCount();i++){
+//			//if(!((Analizable)nodo.getUserObject()).isDirectory())
+//				listModelClases.addElement((DefaultMutableTreeNode)nodo.getChildAt(i));
+//		}
+	}
+	
+	private void actualizarListaMetodos(Clase c){
+		listModelMetodos.clear();
+		if(c==null){
+			System.out.println("asd");
 		}
+		else		
+			for(Metodo m : c.getMetodos()){
+				listModelMetodos.addElement(m);
+			}
 	}
 }

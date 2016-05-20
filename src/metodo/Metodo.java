@@ -32,6 +32,10 @@ public class Metodo {
 		return ((double)cantidadLineasComentadas/(double)(100*(cantidadDeLineas-cantidadLineasEnBlanco)));
 	}
 	
+	public String toString(){
+		return nombre;
+	}
+	
 	public BufferedReader analizar(BufferedReader br) {
 		this.cantidadDeLineas=0L;
 		this.cantidadLineasComentadas=0L;

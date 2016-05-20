@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import clase.Clase;
+import metodo.Metodo;
 
 public class Archivo implements Analizable {
 	//Atributos
@@ -16,6 +18,7 @@ public class Archivo implements Analizable {
 	private Long cantidadLineasEnBlanco;
 	private File archivo;
 	private DefaultMutableTreeNode nodo;
+	private Clase claseAnalizada;
 	
 	//Constructor
 	public Archivo(File archivo) {
@@ -59,6 +62,10 @@ public class Archivo implements Analizable {
 		return archivo.getName();
 	}
 	
+	public Clase getClase(){
+		return claseAnalizada;
+	}
+	
 	public DefaultMutableTreeNode colocarEnArbol(DefaultMutableTreeNode nodo){
 		this.nodo=new DefaultMutableTreeNode(this);
 		nodo.add(this.nodo);
@@ -67,6 +74,10 @@ public class Archivo implements Analizable {
 	
 	public DefaultMutableTreeNode getNodo(){
 		return this.nodo;
+	}
+	
+	public ArrayList<Metodo> getListaMetodos(){
+		return claseAnalizada.getMetodos();
 	}
 	
 	public void analizar(Opciones opciones) {
@@ -119,7 +130,7 @@ public class Archivo implements Analizable {
 				else /* Encontro una linea de codigo */{
 					this.cantidadDeLineas++;
 					String [] classSignature = linea.split(" ");
-					Clase claseAnalizada = null;
+					claseAnalizada = null;
 					for(int i = 0; i < classSignature.length; i++) {
 						if(classSignature[i].equals("class")) {
 							claseAnalizada = new Clase(classSignature[i+1]);

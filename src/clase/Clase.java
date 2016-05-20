@@ -28,6 +28,15 @@ public class Clase {
 		metodos.add(new Metodo(name,cuerpo));
 	}
 	
+	public ArrayList<Metodo> getMetodos(){
+		System.out.println("TAMAÑO: "+ metodos.size());
+		return metodos;
+	}
+	
+	public String toString(){
+		return nombre;
+	}
+	
 	public BufferedReader analizar(BufferedReader br) {
 		this.cantidadDeLineas=0L;
 		this.cantidadLineasComentadas=0L;
@@ -88,6 +97,7 @@ public class Clase {
 						System.out.println("Encontre el metodo "+nombreMetodo);
 					}
 					if(metodoAnalizado != null) {
+						metodos.add(metodoAnalizado);
 						br = metodoAnalizado.analizar(br);
 					}
 				}
