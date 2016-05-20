@@ -29,6 +29,10 @@ public class Archivo implements Analizable {
 	public Long getCantidadLineasComentadas() {
 		return cantidadLineasComentadas;
 	}
+	
+	public Double getPorcentajeLineasComentadas() {
+		return ((double)cantidadLineasComentadas/(double)(100*(cantidadDeLineas-cantidadLineasEnBlanco)));
+	}
 
 	public Long getCantidadLineasEnBlanco() {
 		return cantidadLineasEnBlanco;
