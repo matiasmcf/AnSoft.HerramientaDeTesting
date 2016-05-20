@@ -24,29 +24,34 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.Font;
-import javax.swing.JTextField;
-import java.awt.SystemColor;
+import javax.swing.JList;
+import javax.swing.UIManager;
 
 public class GUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private static GUI frame;
-	private JLabel lblLines;	
-	private JLabel lblBlanks;	
-	private JLabel lblComment;
+	private JLabel lblLineasDeCodigo;	
+	private JLabel lblLineasEnBlanco;	
+	private JLabel lblPorcentajeComentarios;
 	private JLabel lblFile;
-	private JLabel lblTotalLines;
+	private JLabel lblLineasTotales;
 	private File archivo;
 	private Analizable carpetaBase;
 	private JTree arbolDirectorios;
-	private JScrollPane scrollPane;
-	private JTextField textFieldActual;
+	private JScrollPane scrollPaneArbol;
 	//
 	private Opciones opciones;
 	private boolean permitirAnalizar;
-	private JTextField textFieldLenguaje;
+	//Labels de informes
+	private JLabel labelActual;
+	private JLabel lblTxtlenguaje;
+	private JLabel labelHalsteadLong;
+	private JLabel labelHalsteadVol;
+	private JLabel labelFanOut;
+	private JLabel labelFanIn;
+	private JLabel labelComplejidad;
 	
 	//Application
 	public static void main(String[] args) {
@@ -72,8 +77,9 @@ public class GUI extends JFrame {
 				confirmarSalir();
 			}
 		});
+		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 554, 374);
+		setBounds(100, 100, 978, 555);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -86,15 +92,12 @@ public class GUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		textFieldLenguaje = new JTextField();
-		textFieldLenguaje.setEditable(false);
-		textFieldLenguaje.setBounds(350, 36, 169, 27);
-		contentPane.add(textFieldLenguaje);
-		textFieldLenguaje.setColumns(10);
-		
 		opciones = new Opciones(Lenguajes.JAVA,false);
 		permitirAnalizar=false;
-		textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
+		
+		lblTxtlenguaje = new JLabel("Java");
+		lblTxtlenguaje.setBounds(820, 62, 121, 14);
+		contentPane.add(lblTxtlenguaje);
 		
 		JMenuItem mntmAnalizarArchivo = new JMenuItem("Analizar archivo...");
 		mntmAnalizarArchivo.addActionListener(new ActionListener() {
@@ -122,31 +125,31 @@ public class GUI extends JFrame {
 		JMenu mnLenguaje = new JMenu("Lenguaje");
 		menuBar.add(mnLenguaje);
 		
-		JMenuItem mntmC = new JMenuItem("C");
-		mntmC.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				opciones.setLenguaje(Lenguajes.C);
-				textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
-				actualizarAnalisis();
-			}
-		});
-		mnLenguaje.add(mntmC);
-		
-		JMenuItem mntmCPP = new JMenuItem("C++");
-		mntmCPP.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				opciones.setLenguaje(Lenguajes.CPP);
-				textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
-				actualizarAnalisis();
-			}
-		});
-		mnLenguaje.add(mntmCPP);
+//		JMenuItem mntmC = new JMenuItem("C");
+//		mntmC.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				opciones.setLenguaje(Lenguajes.C);
+//				textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
+//				actualizarAnalisis();
+//			}
+//		});
+//		mnLenguaje.add(mntmC);
+//		
+//		JMenuItem mntmCPP = new JMenuItem("C++");
+//		mntmCPP.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				opciones.setLenguaje(Lenguajes.CPP);
+//				textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
+//				actualizarAnalisis();
+//			}
+//		});
+//		mnLenguaje.add(mntmCPP);
 		
 		JMenuItem mntmJava = new JMenuItem("Java");
 		mntmJava.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				opciones.setLenguaje(Lenguajes.JAVA);
-				textFieldLenguaje.setText(opciones.getLenguaje().getNombre());
+				lblTxtlenguaje.setText(opciones.getLenguaje().getNombre());
 				actualizarAnalisis();
 			}
 		});
@@ -177,15 +180,15 @@ public class GUI extends JFrame {
 		mnMultilinea.add(mntmContarBlancosAparte);
 		
 		JLabel lblLneasDeCdigo = new JLabel("L\u00EDneas de c\u00F3digo");
-		lblLneasDeCdigo.setBounds(284, 150, 115, 14);
+		lblLneasDeCdigo.setBounds(638, 136, 172, 14);
 		contentPane.add(lblLneasDeCdigo);
 		
 		JLabel lblLneasEnBlanco = new JLabel("L\u00EDneas en blanco");
-		lblLneasEnBlanco.setBounds(284, 175, 115, 14);
+		lblLneasEnBlanco.setBounds(638, 161, 172, 14);
 		contentPane.add(lblLneasEnBlanco);
 		
-		JLabel lblComentariosDeLnea = new JLabel("Comentarios");
-		lblComentariosDeLnea.setBounds(284, 200, 179, 14);
+		JLabel lblComentariosDeLnea = new JLabel("% comentarios");
+		lblComentariosDeLnea.setBounds(638, 186, 172, 14);
 		contentPane.add(lblComentariosDeLnea);
 		
 		JLabel lblArchivo = new JLabel("Archivo/Carpeta:");
@@ -193,69 +196,185 @@ public class GUI extends JFrame {
 		contentPane.add(lblArchivo);
 		
 		JLabel lblLneasTotales = new JLabel("L\u00EDneas totales");
-		lblLneasTotales.setBounds(284, 125, 115, 14);
+		lblLneasTotales.setBounds(638, 111, 172, 14);
 		contentPane.add(lblLneasTotales);
 		
-		lblTotalLines = new JLabel("");
-		lblTotalLines.setBackground(Color.GRAY);
-		lblTotalLines.setBounds(398, 125, 121, 14);
-		contentPane.add(lblTotalLines);
+		lblLineasTotales = new JLabel("");
+		lblLineasTotales.setBackground(Color.GRAY);
+		lblLineasTotales.setBounds(820, 111, 121, 14);
+		contentPane.add(lblLineasTotales);
 		
 		lblFile = new JLabel("");
 		lblFile.setBounds(131, 11, 388, 14);
 		contentPane.add(lblFile);
 		
-		lblLines = new JLabel("");
-		lblLines.setBounds(398, 150, 121, 14);
-		contentPane.add(lblLines);
+		lblLineasDeCodigo = new JLabel("");
+		lblLineasDeCodigo.setBounds(820, 136, 121, 14);
+		contentPane.add(lblLineasDeCodigo);
 		
-		lblBlanks = new JLabel("");
-		lblBlanks.setBounds(398, 175, 121, 14);
-		contentPane.add(lblBlanks);
+		lblLineasEnBlanco = new JLabel("");
+		lblLineasEnBlanco.setBounds(820, 161, 121, 14);
+		contentPane.add(lblLineasEnBlanco);
 		
-		lblComment = new JLabel("");
-		lblComment.setBounds(398, 200, 121, 14);
-		contentPane.add(lblComment);
+		lblPorcentajeComentarios = new JLabel("");
+		lblPorcentajeComentarios.setBounds(820, 186, 121, 14);
+		contentPane.add(lblPorcentajeComentarios);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(284, 163, 115, 14);
+		separator.setBounds(638, 149, 172, 14);
 		contentPane.add(separator);
 		
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(284, 188, 115, 14);
+		separator_1.setBounds(638, 174, 172, 14);
 		contentPane.add(separator_1);
 		
 		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(284, 213, 115, 14);
+		separator_2.setBounds(638, 199, 172, 14);
 		contentPane.add(separator_2);
 		
 		JSeparator separator_4 = new JSeparator();
-		separator_4.setBounds(284, 138, 115, 14);
+		separator_4.setBounds(638, 124, 172, 14);
 		contentPane.add(separator_4);
 		
-		JLabel lblActual = new JLabel("Actual:");
-		lblActual.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblActual.setBounds(284, 88, 46, 27);
+		JLabel lblActual = new JLabel("Analizando");
+		lblActual.setFont(UIManager.getFont("Button.font"));
+		lblActual.setBounds(638, 86, 172, 14);
 		contentPane.add(lblActual);
 		
-		textFieldActual = new JTextField();
-		textFieldActual.setEditable(false);
-		textFieldActual.setBackground(SystemColor.control);
-		textFieldActual.setBounds(350, 88, 169, 26);
-		contentPane.add(textFieldActual);
-		textFieldActual.setColumns(10);
-		
-		JLabel lblLenguaje = new JLabel("Lenguaje:");
-		lblLenguaje.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblLenguaje.setBounds(284, 36, 60, 27);
+		JLabel lblLenguaje = new JLabel("Lenguaje");
+		lblLenguaje.setFont(UIManager.getFont("Button.font"));
+		lblLenguaje.setBounds(638, 62, 172, 14);
 		contentPane.add(lblLenguaje);
+		
+		JScrollPane scrollPaneMetodos = new JScrollPane();
+		scrollPaneMetodos.setBounds(452, 62, 140, 196);
+		contentPane.add(scrollPaneMetodos);
+		
+		JList listMetodo = new JList();
+		scrollPaneMetodos.setRowHeaderView(listMetodo);
+		
+		JLabel lblMetodos = new JLabel("Metodos:");
+		lblMetodos.setForeground(Color.BLUE);
+		lblMetodos.setBounds(452, 37, 67, 14);
+		contentPane.add(lblMetodos);
+		
+		JScrollPane scrollPaneClases = new JScrollPane();
+		scrollPaneClases.setBounds(249, 62, 140, 196);
+		contentPane.add(scrollPaneClases);
+		
+		JList listaClases = new JList();
+		scrollPaneClases.setRowHeaderView(listaClases);
+		
+		JLabel lblClases = new JLabel("Clases:");
+		lblClases.setForeground(Color.BLUE);
+		lblClases.setBounds(249, 37, 46, 14);
+		contentPane.add(lblClases);
+		
+		JScrollPane scrollPaneCodigo = new JScrollPane();
+		scrollPaneCodigo.setBounds(10, 298, 582, 196);
+		contentPane.add(scrollPaneCodigo);
+		
+		JList list = new JList();
+		list.setVisibleRowCount(15);
+		scrollPaneCodigo.setColumnHeaderView(list);
+		
+		JLabel lblCodigo = new JLabel("Codigo:");
+		lblCodigo.setForeground(Color.BLUE);
+		lblCodigo.setBounds(11, 273, 46, 14);
+		contentPane.add(lblCodigo);
+		
+		JLabel lblAnalisis = new JLabel("Analisis:");
+		lblAnalisis.setForeground(Color.BLUE);
+		lblAnalisis.setBounds(638, 37, 115, 14);
+		contentPane.add(lblAnalisis);
+		
+		JLabel labelExplorador = new JLabel("Explorador:");
+		labelExplorador.setForeground(Color.BLUE);
+		labelExplorador.setBounds(10, 37, 93, 14);
+		contentPane.add(labelExplorador);
+		
+		labelActual = new JLabel("");
+		labelActual.setBounds(820, 86, 121, 14);
+		contentPane.add(labelActual);
+		
+		JSeparator separator_3 = new JSeparator();
+		separator_3.setBounds(638, 99, 172, 14);
+		contentPane.add(separator_3);
+		
+		JSeparator separator_5 = new JSeparator();
+		separator_5.setBounds(638, 75, 172, 14);
+		contentPane.add(separator_5);
+		
+		JLabel lblComplejidadCiclomatica = new JLabel("Complejidad ciclomatica");
+		lblComplejidadCiclomatica.setBounds(638, 211, 172, 14);
+		contentPane.add(lblComplejidadCiclomatica);
+		
+		JSeparator separator_6 = new JSeparator();
+		separator_6.setBounds(638, 224, 172, 14);
+		contentPane.add(separator_6);
+		
+		JLabel lblFanIn = new JLabel("Fan In");
+		lblFanIn.setBounds(638, 236, 172, 14);
+		contentPane.add(lblFanIn);
+		
+		JSeparator separator_7 = new JSeparator();
+		separator_7.setBounds(638, 249, 172, 14);
+		contentPane.add(separator_7);
+		
+		JLabel lblFanOut = new JLabel("Fan Out");
+		lblFanOut.setBounds(638, 260, 172, 14);
+		contentPane.add(lblFanOut);
+		
+		JSeparator separator_8 = new JSeparator();
+		separator_8.setBounds(638, 273, 172, 14);
+		contentPane.add(separator_8);
+		
+		JLabel lblHalsteadLongitud = new JLabel("Halstead longitud");
+		lblHalsteadLongitud.setBounds(638, 284, 172, 14);
+		contentPane.add(lblHalsteadLongitud);
+		
+		JSeparator separator_9 = new JSeparator();
+		separator_9.setBounds(638, 297, 172, 14);
+		contentPane.add(separator_9);
+		
+		JLabel lblHalsteadVolumen = new JLabel("Halstead volumen");
+		lblHalsteadVolumen.setBounds(638, 309, 172, 14);
+		contentPane.add(lblHalsteadVolumen);
+		
+		JSeparator separator_10 = new JSeparator();
+		separator_10.setBounds(638, 322, 172, 14);
+		contentPane.add(separator_10);
+		
+		labelComplejidad = new JLabel("");
+		labelComplejidad.setBounds(820, 211, 121, 14);
+		contentPane.add(labelComplejidad);
+		
+		labelFanIn = new JLabel("");
+		labelFanIn.setBounds(820, 236, 121, 14);
+		contentPane.add(labelFanIn);
+		
+		labelFanOut = new JLabel("");
+		labelFanOut.setBounds(820, 260, 121, 14);
+		contentPane.add(labelFanOut);
+		
+		labelHalsteadLong = new JLabel("");
+		labelHalsteadLong.setBounds(820, 284, 121, 14);
+		contentPane.add(labelHalsteadLong);
+		
+		labelHalsteadVol = new JLabel("");
+		labelHalsteadVol.setBounds(820, 309, 121, 14);
+		contentPane.add(labelHalsteadVol);
+		
+		scrollPaneArbol = new JScrollPane();
+        scrollPaneArbol.setBounds(10, 62, 200, 196);
+		contentPane.add(scrollPaneArbol);
 	}	
 	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
-		if(scrollPane!=null)
-			contentPane.remove(scrollPane);
+		if(scrollPaneArbol!=null)
+			contentPane.remove(scrollPaneArbol);
 		if(arbolDirectorios!=null)
-			scrollPane.remove(arbolDirectorios);
+			scrollPaneArbol.remove(arbolDirectorios);
         if(file.isDirectory()){
         	carpetaBase = new Carpeta(file);
         }
@@ -264,21 +383,21 @@ public class GUI extends JFrame {
         }
         arbolDirectorios = new JTree(carpetaBase.colocarEnArbol(new DefaultMutableTreeNode()));
         arbolDirectorios.setSelectionRow(0); //Selecciona la raiz del arbol por defecto
-        scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 48, 179, 265);
-		contentPane.add(scrollPane);
-        scrollPane.add(arbolDirectorios);
-        scrollPane.setViewportView(arbolDirectorios);
+        scrollPaneArbol = new JScrollPane();
+        scrollPaneArbol.setBounds(10, 62, 200, 196);
+		contentPane.add(scrollPaneArbol);
+		scrollPaneArbol.add(arbolDirectorios);
+		scrollPaneArbol.setViewportView(arbolDirectorios);
         carpetaBase.analizar(opciones);
         actualizarLineas(carpetaBase);
-        textFieldActual.setText(carpetaBase.getFile().getName());
+        labelActual.setText(carpetaBase.getFile().getName());
         lblFile.setText(file.getAbsolutePath());
         arbolDirectorios.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
             	DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) arbolDirectorios.getLastSelectedPathComponent();
             	Analizable an = (Analizable) selectedNode.getUserObject();
             	actualizarLineas(an);
-            	textFieldActual.setText(an.getFile().getName());
+            	labelActual.setText(an.getFile().getName());
             }
         });
         arbolDirectorios.addTreeExpansionListener(new TreeExpansionListener() {
@@ -291,10 +410,10 @@ public class GUI extends JFrame {
 	}
 	
 	private void actualizarLineas(Analizable a){
-        lblLines.setText(String.valueOf(a.getCantidadLineasDeCodigo()));
-    	lblBlanks.setText(String.valueOf(a.getCantidadLineasEnBlanco()));
-    	lblComment.setText(String.valueOf(a.getCantidadLineasComentadas()));
-    	lblTotalLines.setText(String.valueOf(a.getCantidadDeLineas()));
+        lblLineasDeCodigo.setText(String.valueOf(a.getCantidadLineasDeCodigo()));
+    	lblLineasEnBlanco.setText(String.valueOf(a.getCantidadLineasEnBlanco()));
+    	lblPorcentajeComentarios.setText(String.valueOf(a.getCantidadLineasComentadas()));
+    	lblLineasTotales.setText(String.valueOf(a.getCantidadDeLineas()));
 	}
 	
 	private void confirmarSalir() {
