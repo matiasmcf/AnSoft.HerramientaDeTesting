@@ -12,8 +12,17 @@ public class Metodo {
 	private int halsteadLongitud;
 	private double halsteadVolumen;
 	
-	public Metodo(String name) {
+	public Metodo(String name, String body) {
 		nombre = name;
+		cuerpo = body;
+	}
+	
+	public String getNombre() {
+		return nombre;
+	}
+	
+	public String getCuerpo() {
+		return cuerpo;
 	}
 	
 	public Double getPorcentajeLineasComentadas() {
