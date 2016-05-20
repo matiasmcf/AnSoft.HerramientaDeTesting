@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,9 +25,13 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JList;
 import javax.swing.UIManager;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import java.awt.SystemColor;
 
 public class GUI extends JFrame {
 
@@ -52,6 +58,11 @@ public class GUI extends JFrame {
 	private JLabel labelFanOut;
 	private JLabel labelFanIn;
 	private JLabel labelComplejidad;
+	//Listas
+	private JList listaMetodos;
+	private JList listaClases;
+	private DefaultListModel<String> listModelClases;
+	private DefaultListModel<String> listModelMetodos;
 	
 	//Application
 	public static void main(String[] args) {
@@ -250,8 +261,11 @@ public class GUI extends JFrame {
 		scrollPaneMetodos.setBounds(452, 62, 140, 196);
 		contentPane.add(scrollPaneMetodos);
 		
-		JList listMetodo = new JList();
-		scrollPaneMetodos.setRowHeaderView(listMetodo);
+		listModelMetodos = new DefaultListModel<String>();
+		listaMetodos = new JList<String>(listModelMetodos);
+		listaMetodos.setBackground(SystemColor.control);
+		listaMetodos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPaneMetodos.setRowHeaderView(listaMetodos);
 		
 		JLabel lblMetodos = new JLabel("Metodos:");
 		lblMetodos.setForeground(Color.BLUE);
@@ -262,21 +276,16 @@ public class GUI extends JFrame {
 		scrollPaneClases.setBounds(249, 62, 140, 196);
 		contentPane.add(scrollPaneClases);
 		
-		JList listaClases = new JList();
+		listModelClases = new DefaultListModel<String>();
+		listaClases = new JList<String>(listModelClases);
+		listaClases.setBackground(SystemColor.control);
+		listaMetodos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPaneClases.setRowHeaderView(listaClases);
 		
 		JLabel lblClases = new JLabel("Clases:");
 		lblClases.setForeground(Color.BLUE);
 		lblClases.setBounds(249, 37, 46, 14);
 		contentPane.add(lblClases);
-		
-		JScrollPane scrollPaneCodigo = new JScrollPane();
-		scrollPaneCodigo.setBounds(10, 298, 582, 196);
-		contentPane.add(scrollPaneCodigo);
-		
-		JList list = new JList();
-		list.setVisibleRowCount(15);
-		scrollPaneCodigo.setColumnHeaderView(list);
 		
 		JLabel lblCodigo = new JLabel("Codigo:");
 		lblCodigo.setForeground(Color.BLUE);
@@ -368,6 +377,11 @@ public class GUI extends JFrame {
 		scrollPaneArbol = new JScrollPane();
         scrollPaneArbol.setBounds(10, 62, 200, 196);
 		contentPane.add(scrollPaneArbol);
+		
+		JTextArea textAreaCodigo = new JTextArea();
+		textAreaCodigo.setEditable(false);
+		textAreaCodigo.setBounds(10, 298, 584, 196);
+		contentPane.add(textAreaCodigo);
 	}	
 	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
@@ -398,6 +412,7 @@ public class GUI extends JFrame {
             	Analizable an = (Analizable) selectedNode.getUserObject();
             	actualizarLineas(an);
             	labelActual.setText(an.getFile().getName());
+            	actualizarListaClases(selectedNode);
             }
         });
         arbolDirectorios.addTreeExpansionListener(new TreeExpansionListener() {
@@ -431,5 +446,12 @@ public class GUI extends JFrame {
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) arbolDirectorios.getLastSelectedPathComponent();
     	Analizable an = (Analizable) selectedNode.getUserObject();
     	actualizarLineas(an);
+	}
+	
+	private void actualizarListaClases(DefaultMutableTreeNode nodo){
+		listModelClases.clear();
+		for(int i=0;i<nodo.getChildCount();i++){
+			listModelClases.addElement(nodo.getChildAt(i).toString());
+		}
 	}
 }
