@@ -81,10 +81,10 @@ public class Archivo implements Analizable {
 	}
 	
 	public void analizar(Opciones opciones) {
-		this.cantidadDeLineas=0L;
-		this.cantidadLineasComentadas=0L;
-		this.cantidadLineasEnBlanco=0L;
-		//Validacion de tipo de archivo
+//		this.cantidadDeLineas=0L;
+//		this.cantidadLineasComentadas=0L;
+//		this.cantidadLineasEnBlanco=0L;
+//		//Validacion de tipo de archivo
 		if(!archivo.getName().endsWith(opciones.getExtension())){
 			return;
 		}
@@ -128,7 +128,7 @@ public class Archivo implements Analizable {
 					this.cantidadDeLineas++;
 				}
 				else /* Encontro una linea de codigo */{
-					this.cantidadDeLineas++;
+//					this.cantidadDeLineas++;
 					String [] classSignature = linea.split(" ");
 					claseAnalizada = null;
 					for(int i = 0; i < classSignature.length; i++) {
@@ -140,10 +140,13 @@ public class Archivo implements Analizable {
 					}
 					if(claseAnalizada != null) {
 						//aca analizo los metodos
-						br = claseAnalizada.analizar(br);
+						br = claseAnalizada.analizar(br, opciones);
 						cantidadDeLineas += claseAnalizada.getCantidadDeLineas();
 						cantidadLineasComentadas += claseAnalizada.getCantidadLineasComentadas();
 						cantidadLineasEnBlanco += claseAnalizada.getCantidadLineasEnBlanco();
+					}
+					else {
+						cantidadDeLineas++;
 					}
 				}
 				linea = br.readLine();

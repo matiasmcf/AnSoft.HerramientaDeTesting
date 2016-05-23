@@ -1,23 +1,31 @@
 package metodo;
 
+import herramientaTesting.Opciones;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public class Metodo {
 	private String nombre;
 	private String cuerpo;
-	private Long cantidadDeLineas;
-	private Long cantidadLineasComentadas;
-	private Long cantidadLineasEnBlanco;
+	private Long cantidadDeLineas=0L;
+	private Long cantidadLineasComentadas=0L;
+	private Long cantidadLineasEnBlanco=0L;
 	private int complejidadCiclomatica;
 	private int fanIn;
 	private int fanOut;
 	private int halsteadLongitud;
 	private double halsteadVolumen;
+	private int cantidadLlavesAbiertas;
+	private int cantidadLlavesCerradas;
+	private int cantidadLlaves;
 	
-	public Metodo(String name, String body) {
+	public Metodo(String name, String body){
 		nombre = name;
 		cuerpo = body;
+		cantidadDeLineas++;
+		if(body.trim().endsWith("{"))
+			cantidadLlavesAbiertas = 1;
 	}
 	
 	public Long getCantidadDeLineas() {
@@ -38,6 +46,10 @@ public class Metodo {
 		return cuerpo;
 	}
 	
+	public Long getCantidadLineasDeCodigo() {
+		return this.cantidadDeLineas-this.cantidadLineasComentadas-this.cantidadLineasEnBlanco;
+	}
+	
 	public Double getPorcentajeLineasComentadas() {
 		return ((double)cantidadLineasComentadas/(double)(100*(cantidadDeLineas-cantidadLineasEnBlanco)));
 	}
@@ -46,10 +58,10 @@ public class Metodo {
 		return nombre;
 	}
 	
-	public BufferedReader analizar(BufferedReader br) {
-		this.cantidadDeLineas=0L;
-		this.cantidadLineasComentadas=0L;
-		this.cantidadLineasEnBlanco=0L;
+	public BufferedReader analizar(BufferedReader br, Opciones opciones) {	
+//		this.cantidadDeLineas=0L;
+//		this.cantidadLineasComentadas=0L;
+//		this.cantidadLineasEnBlanco=0L;
 		//Validacion de tipo de archivo
 		/*if(!archivo.getName().endsWith(opciones.getExtension())){
 			return;
@@ -58,25 +70,26 @@ public class Metodo {
 		//FileReader fr = null;
 		//BufferedReader br = null;
 		try {
-			String linea;
+			String linea, aux;
 			//fr = new FileReader(archivo);
 			//br = new BufferedReader(fr);
 			linea = br.readLine();
-			while(linea != null && !linea.endsWith("}")) {
+			while(linea != null /*&& !linea.endsWith("}")*/) {
+				aux = linea;
 				linea = linea.trim();
 				if(linea.startsWith("/*")) {
 					while(linea!=null && !linea.endsWith("*/")) {
 						linea = linea.trim();
-						//if(opciones.getBlancosMultilinea()){
+						if(opciones.getBlancosMultilinea()){
 							if(linea.isEmpty()) {
 								cantidadLineasEnBlanco++;
 							}
 							else {
 								this.cantidadLineasComentadas++;
 							}
-						//}
-						//else
-							//this.cantidadLineasComentadas++;
+						}
+						else
+							this.cantidadLineasComentadas++;
 						this.cantidadDeLineas++;
 						linea=br.readLine();
 					}
@@ -95,10 +108,21 @@ public class Metodo {
 				}
 				else /* Encontro una linea de codigo */{
 					this.cantidadDeLineas++;
+					if(linea.endsWith("{") || linea.startsWith("{"))
+						cantidadLlavesAbiertas++;
+					if(linea.endsWith("}"))
+						cantidadLlavesCerradas++;
+					cuerpo=cuerpo.concat("\n");
+					System.out.println(aux);
+					cuerpo=cuerpo.concat(aux);
 					//
 				}
+				if(cantidadLlavesAbiertas==cantidadLlavesCerradas) 
+					break;
 				linea = br.readLine();
 			}
+			System.out.println("LLAVES ABIERTAS: "+cantidadLlavesAbiertas);
+			System.out.println("LLAVES CERRADAS" + cantidadLlavesCerradas);
 			return br;
 		} catch(IOException e) {
 			e.printStackTrace();

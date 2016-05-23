@@ -68,6 +68,7 @@ public class GUI extends JFrame {
 	private JList<Clase> listaClases;
 	private DefaultListModel<Clase> listModelClases;
 	private DefaultListModel<Metodo> listModelMetodos;
+	private JTextArea textAreaCodigo;
 	
 	//Application
 	public static void main(String[] args) {
@@ -108,8 +109,20 @@ public class GUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		opciones = new Opciones(Lenguajes.JAVA,false);
+		opciones = new Opciones(Lenguajes.JAVA,true);
 		permitirAnalizar=false;
+		
+		JScrollPane scrollPaneCodigo = new JScrollPane();
+		scrollPaneCodigo.setBounds(10, 296, 582, 198);
+		contentPane.add(scrollPaneCodigo);
+		
+		textAreaCodigo = new JTextArea();
+		textAreaCodigo.setTabSize(4);
+		textAreaCodigo.setEditable(false);
+		textAreaCodigo.setBounds(10, 298, 584, 196);
+		//contentPane.add(textAreaCodigo);
+		//scrollPaneCodigo.add(textAreaCodigo);
+		scrollPaneCodigo.setViewportView(textAreaCodigo);
 		
 		lblTxtlenguaje = new JLabel("Java");
 		lblTxtlenguaje.setBounds(820, 62, 121, 14);
@@ -269,10 +282,16 @@ public class GUI extends JFrame {
 		
 		listModelMetodos = new DefaultListModel<Metodo>();
 		listaMetodos = new JList<Metodo>(listModelMetodos);
+		listaMetodos.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(e.getValueIsAdjusting()==false)
+					actualizarVistaCodigo(listaMetodos.getSelectedValue());
+			}
+		});
 		listaMetodos.setBackground(SystemColor.control);
 		listaMetodos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scrollPaneMetodos.add(listaMetodos);
-		scrollPaneMetodos.setRowHeaderView(listaMetodos);
+		//scrollPaneMetodos.add(listaMetodos);
+		scrollPaneMetodos.setViewportView(listaMetodos);
 		
 		JLabel lblMetodos = new JLabel("Metodos:");
 		lblMetodos.setForeground(Color.BLUE);
@@ -286,6 +305,7 @@ public class GUI extends JFrame {
 		
 		listModelClases = new DefaultListModel<Clase>();
 		listaClases = new JList<Clase>(listModelClases);
+		listaClases.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listaClases.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(e.getValueIsAdjusting()==false)
@@ -390,13 +410,8 @@ public class GUI extends JFrame {
 		contentPane.add(labelHalsteadVol);
 		
 		scrollPaneArbol = new JScrollPane();
-        scrollPaneArbol.setBounds(10, 62, 200, 196);
+		scrollPaneArbol.setBounds(10, 62, 200, 196);
 		contentPane.add(scrollPaneArbol);
-		
-		JTextArea textAreaCodigo = new JTextArea();
-		textAreaCodigo.setEditable(false);
-		textAreaCodigo.setBounds(10, 298, 584, 196);
-		contentPane.add(textAreaCodigo);
 	}	
 	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
@@ -487,5 +502,16 @@ public class GUI extends JFrame {
 			for(Metodo m : c.getMetodos()){
 				listModelMetodos.addElement(m);
 			}
+	}
+	
+	private void actualizarVistaCodigo(Metodo m){
+		if(m!=null){
+			lblLineasDeCodigo.setText(String.valueOf(m.getCantidadLineasDeCodigo()));
+	    	lblLineasEnBlanco.setText(String.valueOf(m.getCantidadLineasEnBlanco()));
+	    	lblPorcentajeComentarios.setText(String.valueOf(m.getCantidadLineasComentadas()));
+	    	lblLineasTotales.setText(String.valueOf(m.getCantidadDeLineas()));
+			textAreaCodigo.setText("");
+			textAreaCodigo.setText(m.getCuerpo());
+		}
 	}
 }

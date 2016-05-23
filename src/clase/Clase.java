@@ -11,11 +11,12 @@ import metodo.Metodo;
 public class Clase {
 	String nombre;
 	ArrayList<Metodo> metodos;
-	private Long cantidadDeLineas;
-	private Long cantidadLineasComentadas;
-	private Long cantidadLineasEnBlanco;
+	private Long cantidadDeLineas=0L;
+	private Long cantidadLineasComentadas=0L;
+	private Long cantidadLineasEnBlanco=0L;
 	
 	public Clase(String name) {
+		cantidadDeLineas++;
 		metodos = new ArrayList<Metodo>();
 		nombre = name;
 	}
@@ -47,10 +48,10 @@ public class Clase {
 		return nombre;
 	}
 	
-	public BufferedReader analizar(BufferedReader br) {
-		this.cantidadDeLineas=0L;
-		this.cantidadLineasComentadas=0L;
-		this.cantidadLineasEnBlanco=0L;
+	public BufferedReader analizar(BufferedReader br, Opciones opciones) {
+//		this.cantidadDeLineas=0L;
+//		this.cantidadLineasComentadas=0L;
+//		this.cantidadLineasEnBlanco=0L;
 		//Validacion de tipo de archivo
 		/*if(!archivo.getName().endsWith(opciones.getExtension())){
 			return;
@@ -59,27 +60,28 @@ public class Clase {
 		//FileReader fr = null;
 		//BufferedReader br = null;
 		try {
-			String linea;
+			String linea, aux;
 			//fr = new FileReader(archivo);
 			//br = new BufferedReader(fr);
 			System.out.println("Algo");
-			linea = br.readLine();
+			linea = br.readLine();			
 			System.out.println(linea);
 			while(linea != null) {
+				aux = linea;
 				linea = linea.trim();
 				if(linea.startsWith("/*")) {
 					while(linea!=null && !linea.endsWith("*/")) {
 						linea = linea.trim();
-						//if(opciones.getBlancosMultilinea()){
+						if(opciones.getBlancosMultilinea()){
 							if(linea.isEmpty()) {
 								cantidadLineasEnBlanco++;
 							}
 							else {
 								this.cantidadLineasComentadas++;
 							}
-						//}
-						//else
-							//this.cantidadLineasComentadas++;
+						}
+						else
+							this.cantidadLineasComentadas++;
 						this.cantidadDeLineas++;
 						linea=br.readLine();
 					}
@@ -97,21 +99,24 @@ public class Clase {
 					this.cantidadDeLineas++;
 				}
 				else /* Encontro una linea de codigo */{
-					this.cantidadDeLineas++;
+//					this.cantidadDeLineas++;
 					Metodo metodoAnalizado = null;
 					String [] methodSignature = linea.split("\\(");
 					if(methodSignature.length > 1) {
 						methodSignature = methodSignature[0].split(" ");
 						String nombreMetodo = methodSignature[methodSignature.length-1];
-						metodoAnalizado = new Metodo(nombreMetodo,linea);
+						metodoAnalizado = new Metodo(nombreMetodo,aux);
 						System.out.println("Encontre el metodo "+nombreMetodo);
 					}
 					if(metodoAnalizado != null) {
 						metodos.add(metodoAnalizado);
-						br = metodoAnalizado.analizar(br);
+						br = metodoAnalizado.analizar(br, opciones);
 						cantidadDeLineas += metodoAnalizado.getCantidadDeLineas();
 						cantidadLineasComentadas += metodoAnalizado.getCantidadLineasComentadas();
 						cantidadLineasEnBlanco += metodoAnalizado.getCantidadLineasEnBlanco();
+					}
+					else {
+						cantidadDeLineas++;
 					}
 				}
 				linea = br.readLine();
