@@ -117,7 +117,7 @@ public class Metodo {
 						condiciones = linea.split("&&|\\|\\|");
 						complejidadCiclomatica += condiciones.length;
 					}
-					if(linea.matches("case\\s.*:$")){
+					if(linea.matches("case\\s.*:$") || linea.matches(".*catch\\s*\\(.*$")){
 						complejidadCiclomatica++;
 					}
 					if(linea.endsWith("{") || linea.startsWith("{"))
