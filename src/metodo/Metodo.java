@@ -11,7 +11,7 @@ public class Metodo {
 	private Long cantidadDeLineas=0L;
 	private Long cantidadLineasComentadas=0L;
 	private Long cantidadLineasEnBlanco=0L;
-	private int complejidadCiclomatica;
+	private int complejidadCiclomatica = 1;
 	private int fanIn;
 	private int fanOut;
 	private int halsteadLongitud;
@@ -54,6 +54,10 @@ public class Metodo {
 		return ((double)cantidadLineasComentadas/(double)(100*(cantidadDeLineas-cantidadLineasEnBlanco)));
 	}
 	
+	public int getComplejidadCiclomatica(){
+		return complejidadCiclomatica;
+	}
+	
 	public String toString(){
 		return nombre;
 	}
@@ -71,6 +75,7 @@ public class Metodo {
 		//BufferedReader br = null;
 		try {
 			String linea, aux;
+			String[] condiciones;
 			//fr = new FileReader(archivo);
 			//br = new BufferedReader(fr);
 			linea = br.readLine();
@@ -108,6 +113,13 @@ public class Metodo {
 				}
 				else /* Encontro una linea de codigo */{
 					this.cantidadDeLineas++;
+					if(linea.matches(".*if\\s*\\(.*$") || linea.matches(".*while\\s*\\(.*$") || linea.startsWith("for") ){
+						condiciones = linea.split("&&|\\|\\|");
+						complejidadCiclomatica += condiciones.length;
+					}
+					if(linea.matches("case\\s.*:$")){
+						complejidadCiclomatica++;
+					}
 					if(linea.endsWith("{") || linea.startsWith("{"))
 						cantidadLlavesAbiertas++;
 					if(linea.endsWith("}"))

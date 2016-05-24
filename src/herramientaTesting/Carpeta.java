@@ -51,7 +51,7 @@ public class Carpeta implements Analizable {
 	public void agregarContenido(Analizable contenido){
 		this.contenido.add(contenido);
 	}
-	
+		
 	public File getFile(){
 		return carpeta;
 	}
