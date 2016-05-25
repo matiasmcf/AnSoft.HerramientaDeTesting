@@ -102,7 +102,7 @@ public class Clase {
 //					this.cantidadDeLineas++;
 					Metodo metodoAnalizado = null;
 					String [] methodSignature = linea.split("\\(");
-					if(methodSignature.length > 1) {
+					if(methodSignature.length > 1 && linea.contains("{")) {
 						methodSignature = methodSignature[0].split(" ");
 						String nombreMetodo = methodSignature[methodSignature.length-1];
 						metodoAnalizado = new Metodo(nombreMetodo,aux);
