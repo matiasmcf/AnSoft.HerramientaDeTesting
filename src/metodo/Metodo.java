@@ -54,6 +54,10 @@ public class Metodo {
 		return ((double)cantidadLineasComentadas/(double)(100*(cantidadDeLineas-cantidadLineasEnBlanco)));
 	}
 	
+	public int getfanIn(){
+		return fanIn;
+	}
+	
 	public int getComplejidadCiclomatica(){
 		return complejidadCiclomatica;
 	}
@@ -119,6 +123,9 @@ public class Metodo {
 					}
 					if(linea.matches("case\\s.*:$") || linea.matches(".*catch\\s*\\(.*$")){
 						complejidadCiclomatica++;
+					}
+					if(linea.matches(".*\\..*\\(.*\\);$")){
+						fanIn++;
 					}
 					if(linea.endsWith("{") || linea.startsWith("{"))
 						cantidadLlavesAbiertas++;

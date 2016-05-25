@@ -461,6 +461,7 @@ public class GUI extends JFrame {
     	lblPorcentajeComentarios.setText(String.valueOf(a.getCantidadLineasComentadas()));
     	lblLineasTotales.setText(String.valueOf(a.getCantidadDeLineas()));
     	labelComplejidad.setText("");
+    	labelFanIn.setText("");
 	}
 	
 	private void confirmarSalir() {
@@ -512,6 +513,7 @@ public class GUI extends JFrame {
 	    	lblPorcentajeComentarios.setText(String.valueOf(m.getCantidadLineasComentadas()));
 	    	lblLineasTotales.setText(String.valueOf(m.getCantidadDeLineas()));
 	    	labelComplejidad.setText(String.valueOf(m.getComplejidadCiclomatica()));
+	    	labelFanIn.setText(String.valueOf(m.getfanIn()));
 	    	textAreaCodigo.setText("");
 			textAreaCodigo.setText(m.getCuerpo());
 		}
