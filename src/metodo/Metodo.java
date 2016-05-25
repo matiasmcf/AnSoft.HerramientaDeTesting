@@ -122,7 +122,7 @@ public class Metodo {
 					}
 					if(linea.endsWith("{") || linea.startsWith("{"))
 						cantidadLlavesAbiertas++;
-					if(linea.endsWith("}"))
+					if(linea.endsWith("}") || linea.startsWith("}"))
 						cantidadLlavesCerradas++;
 					cuerpo=cuerpo.concat("\n");
 					System.out.println(aux);
