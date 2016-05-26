@@ -1,9 +1,13 @@
 package metodo;
 
-import herramientaTesting.Opciones;
-
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import herramientaTesting.Opciones;
+import metodo.utils.ElementoListaOperadoresCantidad;
+import metodo.utils.EnumOperador;
 
 public class Metodo {
 	private String nombre;
@@ -20,14 +24,49 @@ public class Metodo {
 	private int cantidadLlavesCerradas;
 	private int cantidadLlaves;
 	
+	
+	private List<EnumOperador> listaDeOperadores;
+	private List<ElementoListaOperadoresCantidad> listaOperadoresYRepeticiones;
 	public Metodo(String name, String body){
 		nombre = name;
 		cuerpo = body;
 		cantidadDeLineas++;
 		if(body.trim().endsWith("{"))
 			cantidadLlavesAbiertas = 1;
+		//INICIALIZO LAS DOS LISTAS
+		inicializarListaEnums();
+		inicializarListaOperadoresYCantidades();
 	}
 	
+	private void inicializarListaEnums() {
+		this.listaDeOperadores= new ArrayList<EnumOperador>();
+		//Operadores aritmeticos
+		this.listaDeOperadores.add(EnumOperador.SUMA);
+		this.listaDeOperadores.add(EnumOperador.RESTA);	
+		this.listaDeOperadores.add(EnumOperador.MULTIPLICACION);	
+		this.listaDeOperadores.add(EnumOperador.DIVISION);	
+		this.listaDeOperadores.add(EnumOperador.IGUAL);		
+		//Operadores logicos
+		this.listaDeOperadores.add(EnumOperador.IGUAL_A);	
+		this.listaDeOperadores.add(EnumOperador.DISTINTO);	
+		this.listaDeOperadores.add(EnumOperador.MENOR);	
+		this.listaDeOperadores.add(EnumOperador.MENOR_IGUAL);	
+		this.listaDeOperadores.add(EnumOperador.MAYOR);	
+		this.listaDeOperadores.add(EnumOperador.MAYOR_IGUAL);	
+		this.listaDeOperadores.add(EnumOperador.NEGADO);	
+		this.listaDeOperadores.add(EnumOperador.XOR);	
+		this.listaDeOperadores.add(EnumOperador.OR);	
+		this.listaDeOperadores.add(EnumOperador.AND);		
+	}
+	
+	
+	private void inicializarListaOperadoresYCantidades(){
+		this.listaOperadoresYRepeticiones=new ArrayList<ElementoListaOperadoresCantidad>();
+		for(EnumOperador enumAGuardarEnLista : this.listaDeOperadores){
+			this.listaOperadoresYRepeticiones.add(new ElementoListaOperadoresCantidad(enumAGuardarEnLista));
+		}
+	}
+
 	public Long getCantidadDeLineas() {
 		return cantidadDeLineas;
 	}
@@ -117,6 +156,7 @@ public class Metodo {
 				}
 				else /* Encontro una linea de codigo */{
 					this.cantidadDeLineas++;
+					this.verificarOperadores(linea);
 					if(linea.matches(".*if\\s*\\(.*$") || linea.matches(".*while\\s*\\(.*$") || linea.startsWith("for") ){
 						condiciones = linea.split("&&|\\|\\|");
 						complejidadCiclomatica += condiciones.length;
@@ -156,5 +196,25 @@ public class Metodo {
 				}
 			}
 		}*/
+	}
+
+	//TODO: aca llamo cada vez que hay una linea
+	private void verificarOperadores(final String linea) {
+		String auxALaLinea = linea;
+		int i = 0;
+		for(EnumOperador operadorActual : this.listaDeOperadores){
+			this.listaOperadoresYRepeticiones.get(i).añadirRepeticiones(this.analizarLineaConOperadores(operadorActual, linea));
+			i++;
+		}
+		
+	}
+
+	private Long analizarLineaConOperadores(EnumOperador operadorActual, String linea) {
+		Long contador=0L;
+		while (linea.indexOf(operadorActual.getDescripcion()) > -1) {
+		      linea = linea.substring(linea.indexOf(operadorActual.getDescripcion())+operadorActual.getDescripcion().length(),linea.length());
+		      contador++; 
+		}
+		return contador;
 	}
 }
