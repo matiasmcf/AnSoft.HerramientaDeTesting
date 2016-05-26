@@ -217,4 +217,21 @@ public class Metodo {
 		}
 		return contador;
 	}
+
+	public int getHalsteadLongitud() {
+		if(halsteadLongitud==0){
+			setHalsteadLongitud();
+		}
+		return halsteadLongitud;
+	}
+
+	private void setHalsteadLongitud() {
+		this.halsteadLongitud=0;
+		for(ElementoListaOperadoresCantidad elemento :listaOperadoresYRepeticiones){
+			this.halsteadLongitud+=elemento.getCantidad();
+			if(elemento.getCantidad()!= 0 ){
+				this.halsteadLongitud++;
+			}
+		}
+	}
 }
