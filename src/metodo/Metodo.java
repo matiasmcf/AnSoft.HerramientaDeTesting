@@ -45,7 +45,9 @@ public class Metodo {
 		this.listaDeOperadores.add(EnumOperador.RESTA);	
 		this.listaDeOperadores.add(EnumOperador.MULTIPLICACION);	
 		this.listaDeOperadores.add(EnumOperador.DIVISION);	
-		this.listaDeOperadores.add(EnumOperador.IGUAL);		
+		this.listaDeOperadores.add(EnumOperador.IGUAL);
+		this.listaDeOperadores.add(EnumOperador.INCREMENTO);
+		this.listaDeOperadores.add(EnumOperador.DECREMENTO);
 		//Operadores logicos
 		this.listaDeOperadores.add(EnumOperador.IGUAL_A);	
 		this.listaDeOperadores.add(EnumOperador.DISTINTO);	
