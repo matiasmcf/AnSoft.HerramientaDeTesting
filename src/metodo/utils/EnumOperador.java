@@ -26,7 +26,8 @@ public enum EnumOperador {
 	FOR("for"),
 	WHILE("while"),
 	CASE("case"),
-	SYSO("System.out.println(");
+	SYSO("System.out.println("),
+	IF("if");
 	
 	
 	private String descripcion;

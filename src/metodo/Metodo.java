@@ -41,20 +41,23 @@ public class Metodo {
 	private void inicializarListaEnums() {
 		this.listaDeOperadores = new ArrayList<EnumOperador>();
 		// Operadores aritmeticos
+		this.listaDeOperadores.add(EnumOperador.MENOR_IGUAL);
+		this.listaDeOperadores.add(EnumOperador.MAYOR_IGUAL);
+		this.listaDeOperadores.add(EnumOperador.DISTINTO);
+		this.listaDeOperadores.add(EnumOperador.IGUAL_A);
+		this.listaDeOperadores.add(EnumOperador.INCREMENTO);
+		this.listaDeOperadores.add(EnumOperador.DECREMENTO);
+		
+		
 		this.listaDeOperadores.add(EnumOperador.SUMA);
 		this.listaDeOperadores.add(EnumOperador.RESTA);
 		this.listaDeOperadores.add(EnumOperador.MULTIPLICACION);
 		this.listaDeOperadores.add(EnumOperador.DIVISION);
 		this.listaDeOperadores.add(EnumOperador.IGUAL);
-		this.listaDeOperadores.add(EnumOperador.INCREMENTO);
-		this.listaDeOperadores.add(EnumOperador.DECREMENTO);
+		
 		// Operadores logicos
-		this.listaDeOperadores.add(EnumOperador.IGUAL_A);
-		this.listaDeOperadores.add(EnumOperador.DISTINTO);
 		this.listaDeOperadores.add(EnumOperador.MENOR);
-		this.listaDeOperadores.add(EnumOperador.MENOR_IGUAL);
 		this.listaDeOperadores.add(EnumOperador.MAYOR);
-		this.listaDeOperadores.add(EnumOperador.MAYOR_IGUAL);
 		this.listaDeOperadores.add(EnumOperador.NEGADO);
 		this.listaDeOperadores.add(EnumOperador.XOR);
 		this.listaDeOperadores.add(EnumOperador.OR);
@@ -63,6 +66,7 @@ public class Metodo {
 		this.listaDeOperadores.add(EnumOperador.WHILE);
 		this.listaDeOperadores.add(EnumOperador.CASE);
 		this.listaDeOperadores.add(EnumOperador.SYSO);
+		this.listaDeOperadores.add(EnumOperador.IF);
 	}
 
 	private void inicializarListaOperadoresYCantidades() {
@@ -183,6 +187,7 @@ public class Metodo {
 					break;
 				linea = br.readLine();
 			}
+			emparejarListaOperadoresCantidad();
 			System.out.println("LLAVES ABIERTAS: " + cantidadLlavesAbiertas);
 			System.out.println("LLAVES CERRADAS" + cantidadLlavesCerradas);
 			return br;
@@ -195,10 +200,8 @@ public class Metodo {
 		 * e.printStackTrace(); } } }
 		 */
 	}
-
 	// TODO: aca llamo cada vez que hay una linea
 	private void verificarOperadores(final String linea) {
-		String auxALaLinea = linea;
 		int i = 0;
 		for(EnumOperador operadorActual : this.listaDeOperadores){
 			this.listaOperadoresYRepeticiones.get(i).addRepeticiones(this.analizarLineaConOperadores(operadorActual, linea));
@@ -216,6 +219,35 @@ public class Metodo {
 			contador++;
 		}
 		return contador;
+	}
+	
+	
+	private void emparejarListaOperadoresCantidad() {
+		Long cantidadDeMenorIgual 	= listaOperadoresYRepeticiones.get(0).getCantidad();
+		Long cantidadDeMayorIgual 	= listaOperadoresYRepeticiones.get(1).getCantidad();
+		Long cantidadDeDistintos  	= listaOperadoresYRepeticiones.get(2).getCantidad();
+		Long cantidadDeIgualA		= listaOperadoresYRepeticiones.get(3).getCantidad();
+		Long cantidadDeIncrementos 	= listaOperadoresYRepeticiones.get(4).getCantidad();
+		Long cantidadDeDecrementos 	= listaOperadoresYRepeticiones.get(5).getCantidad();
+		for(ElementoListaOperadoresCantidad operadorYCantidad : listaOperadoresYRepeticiones){
+			switch (operadorYCantidad.getEnumOperador()) {
+			case SUMA:
+					//cada incremento tiene dos mas tengo que restarlo y por eso multiplico por -1
+					operadorYCantidad.addRepeticiones((cantidadDeIncrementos*2)*(-1));
+				break;
+			case RESTA:
+					operadorYCantidad.addRepeticiones((cantidadDeDecrementos*2)*(-1));
+				break;
+			case IGUAL:
+					operadorYCantidad.addRepeticiones( (cantidadDeIgualA * 2 + cantidadDeDistintos + cantidadDeMayorIgual+ cantidadDeMenorIgual) * (-1) );
+				break;
+			case NEGADO:
+					operadorYCantidad.addRepeticiones((cantidadDeDistintos) * (-1) );
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	public int getHalsteadLongitud() {
