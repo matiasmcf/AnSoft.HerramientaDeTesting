@@ -22,7 +22,13 @@ public enum EnumOperador {
 	NEGADO("!"),
 	XOR("^"),
 	OR("||"),
-	AND("&&");
+	AND("&&"),
+	FOR("for"),
+	WHILE("while"),
+	CASE("case"),
+	SYSO("System.out.println("),
+	IF("if");
+	
 	
 	private String descripcion;
 	private EnumOperador(String textoOperador ){
