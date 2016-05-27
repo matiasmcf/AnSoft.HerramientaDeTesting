@@ -46,6 +46,8 @@ public class Metodo {
 		this.listaDeOperadores.add(EnumOperador.MULTIPLICACION);
 		this.listaDeOperadores.add(EnumOperador.DIVISION);
 		this.listaDeOperadores.add(EnumOperador.IGUAL);
+		this.listaDeOperadores.add(EnumOperador.INCREMENTO);
+		this.listaDeOperadores.add(EnumOperador.DECREMENTO);
 		// Operadores logicos
 		this.listaDeOperadores.add(EnumOperador.IGUAL_A);
 		this.listaDeOperadores.add(EnumOperador.DISTINTO);
@@ -198,9 +200,8 @@ public class Metodo {
 	private void verificarOperadores(final String linea) {
 		String auxALaLinea = linea;
 		int i = 0;
-		for (EnumOperador operadorActual : this.listaDeOperadores) {
-			this.listaOperadoresYRepeticiones.get(i)
-					.añadirRepeticiones(this.analizarLineaConOperadores(operadorActual, linea));
+		for(EnumOperador operadorActual : this.listaDeOperadores){
+			this.listaOperadoresYRepeticiones.get(i).addRepeticiones(this.analizarLineaConOperadores(operadorActual, linea));
 			i++;
 		}
 

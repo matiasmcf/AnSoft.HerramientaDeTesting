@@ -7,6 +7,8 @@ public enum EnumOperador {
 	MULTIPLICACION("*"),
 	DIVISION("/"),
 	IGUAL("="),
+	INCREMENTO("++"),
+	DECREMENTO("--"),
 	//Operadores logicos
 	IGUAL_A("=="),
 	DISTINTO("!="),
@@ -17,7 +19,7 @@ public enum EnumOperador {
 	MAYOR(">"),
 	MAYOR_IGUAL(">="),
 	
-	NEGADO("!="),
+	NEGADO("!"),
 	XOR("^"),
 	OR("||"),
 	AND("&&"),
