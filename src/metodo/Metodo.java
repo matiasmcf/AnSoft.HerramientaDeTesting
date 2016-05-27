@@ -31,6 +31,14 @@ public class Metodo {
 
 	private List<EnumOperador> listaDeOperadores;
 	private List<ElementoListaOperadoresCantidad> listaOperadoresYRepeticiones;
+	//
+	private static String[] palabras = { "abstract", "continue", "for", "new", "switch", "assert", "default", "goto",
+			"package", "synchronized", "boolean", "do", "if", "private", "this", "break", "double", "implements",
+			"protected", "throw", "byte", "else", "import", "public", "throws", "case", "enum", "instanceof", "return",
+			"transient", "catch", "extends", "int", "short", "try", "char", "final", "interface", "static", "void",
+			"class", "finally", "long", "strictfp", "volatile", "const", "float", "native", "super", "while" };
+	
+	private static String[] simbolos={"+","++","-","--","*",".",";","/","%","!",">","<",">=","<=","==","=",":","~","(",")","{","}","[","]"};
 
 	public Metodo(String name, String body) {
 		nombre = name;
@@ -72,6 +80,8 @@ public class Metodo {
 		this.listaDeOperadores.add(EnumOperador.CASE);
 		this.listaDeOperadores.add(EnumOperador.SYSO);
 		this.listaDeOperadores.add(EnumOperador.IF);
+		this.listaDeOperadores.add(EnumOperador.PUNTO_Y_COMA);
+		this.listaDeOperadores.add(EnumOperador.RETURN);
 	}
 
 	private void inicializarListaOperadoresYCantidades() {
@@ -181,7 +191,7 @@ public class Metodo {
 						complejidadCiclomatica++;
 					}
 					if (linea.matches(".*\\..*\\(.*\\);$")) {
-						fanIn++;
+						fanOut++;
 					}
 					if (linea.endsWith("{") || linea.startsWith("{"))
 						cantidadLlavesAbiertas++;
@@ -258,6 +268,88 @@ public class Metodo {
 			}
 		}
 	}
+	
+	public void calcularCantOperandos(){
+		operandosTotales=0;
+		for(ElementoListaOperadoresCantidad e : listaOperadoresYRepeticiones){
+			if(e.getCantidad()>0){
+			switch(e.getEnumOperador()){
+			case AND:
+				break;
+			case CASE: operandosTotales+=e.getCantidad();
+				break;
+			case DECREMENTO: operadoresTotales+=e.getCantidad();
+			System.out.println("a3");
+				break;
+			case DISTINTO: operandosTotales+=2*e.getCantidad();
+			System.out.println("a4");
+				break;
+			case DIVISION: operandosTotales+=2*e.getCantidad();
+			System.out.println("a5");
+				break;
+			case FOR:
+				break;
+			case IF:
+				break;
+			case IGUAL: operandosTotales+=2*e.getCantidad();
+			System.out.println("a6");
+				break;
+			case IGUAL_A: operandosTotales+=2*e.getCantidad();
+			System.out.println("a7");
+				break;
+			case INCREMENTO: operandosTotales+=e.getCantidad();
+			System.out.println("a8");
+				break;
+			case MAYOR: operandosTotales+=2*e.getCantidad();
+			System.out.println("a9");
+				break;
+			case MAYOR_IGUAL: operandosTotales+=2*e.getCantidad();
+			System.out.println("a10");
+				break;
+			case MENOR: operandosTotales+=2*e.getCantidad();
+			System.out.println("a11");
+				break;
+			case MENOR_IGUAL: operandosTotales+=2*e.getCantidad();
+			System.out.println("a12");
+				break;
+			case MULTIPLICACION: operandosTotales+=2*e.getCantidad();
+			System.out.println("a13");
+				break;
+			case NEGADO: operandosTotales+=e.getCantidad();
+			System.out.println("a14");
+				break;
+			case OR:
+				break;
+			case PUNTO_Y_COMA:
+				break;
+			case RESTA: operandosTotales+=2*e.getCantidad();
+			System.out.println("a15");
+				break;
+			case SUMA: operandosTotales+=2*e.getCantidad();
+			System.out.println("a16");
+				break;
+			case SYSO: operandosTotales+=e.getCantidad();
+			System.out.println("a17");
+				break;
+			case WHILE:
+				break;
+			case XOR:
+				break;
+			case RETURN: 
+				break;
+			default:
+				break;
+			}
+		}
+		}
+	}
+	
+	public void contarOperandos(){
+		String []codigo=cuerpo.split("\n");
+		for(int i=0;i<codigo.length;i++){
+			
+		}
+	}
 
 	public int getHalsteadLongitud() {
 		if (halsteadLongitud == 0) {
@@ -270,21 +362,22 @@ public class Metodo {
 		this.halsteadLongitud = 0;
 		for (ElementoListaOperadoresCantidad elemento : listaOperadoresYRepeticiones) {
 			this.halsteadLongitud += elemento.getCantidad();
-			if (elemento.getCantidad() != 0) {
-				this.halsteadLongitud++;
-			}
+			System.out.println(elemento.getEnumOperador().getDescripcion()+"\t"+elemento.getCantidad());
 		}
+		calcularCantOperandos();
+		System.out.println("CANT OPERANDOS: "+operandosTotales);
+		halsteadLongitud+=operandosTotales;
 	}
 	
 	private void setHalsteadVolumen() {
 		int contador = 0;
 		for (ElementoListaOperadoresCantidad elemento : listaOperadoresYRepeticiones) {
-			contador += elemento.getCantidad();
-			if (elemento.getCantidad() != 0) {
-				contador++;
-			}
+			if(elemento.getCantidad()!=0)
+				contador += elemento.getCantidad();
 		}
+		halsteadVolumen=halsteadLongitud*(Math.log(contador)/Math.log(2));
 	}
+	
 	
 	public double getHalsteadVolumen() {
 		if (halsteadVolumen == 0) {

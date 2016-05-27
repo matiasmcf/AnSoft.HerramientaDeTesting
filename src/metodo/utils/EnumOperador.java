@@ -27,7 +27,9 @@ public enum EnumOperador {
 	WHILE("while"),
 	CASE("case"),
 	SYSO("System.out.println("),
-	IF("if");
+	IF("if"),
+	PUNTO_Y_COMA(";"),
+	RETURN("return");
 	
 	
 	private String descripcion;

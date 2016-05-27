@@ -224,7 +224,7 @@ public class GUI extends JFrame {
 		lblArchivo.setBounds(10, 11, 111, 14);
 		contentPane.add(lblArchivo);
 		
-		JLabel lblLneasTotales = new JLabel("LiDneas totales");
+		JLabel lblLneasTotales = new JLabel("Lineas totales");
 		lblLneasTotales.setBounds(638, 111, 172, 14);
 		contentPane.add(lblLneasTotales);
 		
@@ -516,7 +516,7 @@ public class GUI extends JFrame {
 	    	labelFanIn.setText(String.valueOf(m.getfanIn()));
 	    	labelFanOut.setText(String.valueOf(m.getFanOut()));
 	    	labelHalsteadLong.setText(String.valueOf(m.getHalsteadLongitud()));;
-	    	labelHalsteadVol.setText(String.valueOf(m.getHalsteadVolumen()));
+	    	labelHalsteadVol.setText(String.format("%.2f",m.getHalsteadVolumen()));
 	    	textAreaCodigo.setText("");
 			textAreaCodigo.setText(m.getCuerpo());
 		}
