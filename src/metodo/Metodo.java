@@ -23,6 +23,11 @@ public class Metodo {
 	private int cantidadLlavesAbiertas;
 	private int cantidadLlavesCerradas;
 	private int cantidadLlaves;
+	//
+	private int operadoresDistintos;
+	private int operandosDistintos;
+	private int operadoresTotales;
+	private int operandosTotales;
 
 	private List<EnumOperador> listaDeOperadores;
 	private List<ElementoListaOperadoresCantidad> listaOperadoresYRepeticiones;
@@ -271,7 +276,20 @@ public class Metodo {
 		}
 	}
 	
+	private void setHalsteadVolumen() {
+		int contador = 0;
+		for (ElementoListaOperadoresCantidad elemento : listaOperadoresYRepeticiones) {
+			contador += elemento.getCantidad();
+			if (elemento.getCantidad() != 0) {
+				contador++;
+			}
+		}
+	}
+	
 	public double getHalsteadVolumen() {
+		if (halsteadVolumen == 0) {
+			setHalsteadVolumen();
+		}
 		return halsteadVolumen;
 	}
 }
