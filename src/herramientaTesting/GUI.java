@@ -212,11 +212,11 @@ public class GUI extends JFrame {
 		lblLneasDeCdigo.setBounds(638, 136, 172, 14);
 		contentPane.add(lblLneasDeCdigo);
 		
-		JLabel lblLneasEnBlanco = new JLabel("L\u00EDneas en blanco");
+		JLabel lblLneasEnBlanco = new JLabel("Lineas en blanco");
 		lblLneasEnBlanco.setBounds(638, 161, 172, 14);
 		contentPane.add(lblLneasEnBlanco);
 		
-		JLabel lblComentariosDeLnea = new JLabel("% comentarios");
+		JLabel lblComentariosDeLnea = new JLabel("Lineas de Comentarios");
 		lblComentariosDeLnea.setBounds(638, 186, 172, 14);
 		contentPane.add(lblComentariosDeLnea);
 		
@@ -224,7 +224,7 @@ public class GUI extends JFrame {
 		lblArchivo.setBounds(10, 11, 111, 14);
 		contentPane.add(lblArchivo);
 		
-		JLabel lblLneasTotales = new JLabel("L\u00EDneas totales");
+		JLabel lblLneasTotales = new JLabel("LiDneas totales");
 		lblLneasTotales.setBounds(638, 111, 172, 14);
 		contentPane.add(lblLneasTotales);
 		
@@ -514,6 +514,9 @@ public class GUI extends JFrame {
 	    	lblLineasTotales.setText(String.valueOf(m.getCantidadDeLineas()));
 	    	labelComplejidad.setText(String.valueOf(m.getComplejidadCiclomatica()));
 	    	labelFanIn.setText(String.valueOf(m.getfanIn()));
+	    	labelFanOut.setText(String.valueOf(m.getFanOut()));
+	    	labelHalsteadLong.setText(String.valueOf(m.getHalsteadLongitud()));;
+	    	labelHalsteadVol.setText(String.valueOf(m.getHalsteadVolumen()));
 	    	textAreaCodigo.setText("");
 			textAreaCodigo.setText(m.getCuerpo());
 		}
