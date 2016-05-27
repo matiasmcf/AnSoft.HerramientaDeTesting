@@ -107,7 +107,11 @@ public class Metodo {
 	public int getfanIn() {
 		return fanIn;
 	}
-
+	
+	public int getFanOut() {
+		return fanOut;
+	}
+	
 	public int getComplejidadCiclomatica() {
 		return complejidadCiclomatica;
 	}
@@ -265,5 +269,9 @@ public class Metodo {
 				this.halsteadLongitud++;
 			}
 		}
+	}
+	
+	public double getHalsteadVolumen() {
+		return halsteadVolumen;
 	}
 }
