@@ -20,7 +20,12 @@ public enum EnumOperador {
 	NEGADO("!="),
 	XOR("^"),
 	OR("||"),
-	AND("&&");
+	AND("&&"),
+	FOR("for"),
+	WHILE("while"),
+	CASE("case"),
+	SYSO("System.out.println(");
+	
 	
 	private String descripcion;
 	private EnumOperador(String textoOperador ){
