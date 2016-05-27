@@ -28,7 +28,7 @@ public class ElementoListaOperadoresCantidad {
 		this.cantidad = cantidad;
 	}
 	
-	public void añadirRepeticiones(Long cantidad){
+	public void addRepeticiones(Long cantidad){
 		this.cantidad+=cantidad;
 	}
 	

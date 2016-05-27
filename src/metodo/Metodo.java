@@ -203,7 +203,7 @@ public class Metodo {
 		String auxALaLinea = linea;
 		int i = 0;
 		for(EnumOperador operadorActual : this.listaDeOperadores){
-			this.listaOperadoresYRepeticiones.get(i).añadirRepeticiones(this.analizarLineaConOperadores(operadorActual, linea));
+			this.listaOperadoresYRepeticiones.get(i).addRepeticiones(this.analizarLineaConOperadores(operadorActual, linea));
 			i++;
 		}
 		
