@@ -1,12 +1,14 @@
 package clase;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import herramientaTesting.Opciones;
 import metodo.Metodo;
+import metodo.utils.ComplejidadCiclomatica;
+import metodo.utils.FanIn;
+import metodo.utils.Halstead;
 
 public class Clase {
 	String nombre;
@@ -63,9 +65,8 @@ public class Clase {
 			String linea, aux;
 			//fr = new FileReader(archivo);
 			//br = new BufferedReader(fr);
-			System.out.println("Algo");
 			linea = br.readLine();			
-			System.out.println(linea);
+			//System.out.println(linea);
 			while(linea != null) {
 				aux = linea;
 				linea = linea.trim();
@@ -106,11 +107,17 @@ public class Clase {
 						methodSignature = methodSignature[0].split(" ");
 						String nombreMetodo = methodSignature[methodSignature.length-1];
 						metodoAnalizado = new Metodo(nombreMetodo,aux);
-						System.out.println("Encontre el metodo "+nombreMetodo);
+						//System.out.println("Encontre el metodo "+nombreMetodo);
 					}
 					if(metodoAnalizado != null) {
 						metodos.add(metodoAnalizado);
 						br = metodoAnalizado.analizar(br, opciones);
+						ComplejidadCiclomatica cc= new ComplejidadCiclomatica(metodoAnalizado);
+						metodoAnalizado.setComplejidadCiclomatica(cc.getComplejidadCiclomatica());
+						FanIn fanIn= new FanIn(metodoAnalizado, metodos);
+						metodoAnalizado.setFanIn(fanIn.getfanIn());
+						Halstead halstead= new Halstead(metodoAnalizado);
+						metodoAnalizado.setHalstead(halstead);
 						cantidadDeLineas += metodoAnalizado.getCantidadDeLineas();
 						cantidadLineasComentadas += metodoAnalizado.getCantidadLineasComentadas();
 						cantidadLineasEnBlanco += metodoAnalizado.getCantidadLineasEnBlanco();
@@ -136,5 +143,4 @@ public class Clase {
 			}
 		}*/
 	}
-	
 }
