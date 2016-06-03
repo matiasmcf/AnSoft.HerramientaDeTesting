@@ -2,7 +2,6 @@ package metodo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-
 import herramientaTesting.Opciones;
 import metodo.utils.Halstead;
 
@@ -88,6 +87,10 @@ public class Metodo {
 	}
 	public String toString() {
 		return nombre;
+	}
+	
+	public Halstead getHalstead(){
+		return halstead;
 	}
 	
 	public int getHalsteadLongitud() {

@@ -1,6 +1,7 @@
 package herramientaTesting;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -69,6 +70,14 @@ public class GUI extends JFrame {
 	private DefaultListModel<Clase> listModelClases;
 	private DefaultListModel<Metodo> listModelMetodos;
 	private JTextArea textAreaCodigo;
+	private JLabel labelOperandosTotales;
+	private JLabel labelOperadoresTotales;
+	private JLabel labelOperandosUnicos;
+	private JLabel labelOperadoresUnicos;
+	private JLabel lblCantidadOperandosTotales;
+	private JLabel lblOperadoresTotales;
+	private JLabel lblOperandosUnicos;
+	private JLabel lblOperadoresUnicos;
 	
 	//Application
 	public static void main(String[] args) {
@@ -412,6 +421,54 @@ public class GUI extends JFrame {
 		scrollPaneArbol = new JScrollPane();
 		scrollPaneArbol.setBounds(10, 62, 200, 196);
 		contentPane.add(scrollPaneArbol);
+		
+		lblOperadoresUnicos = new JLabel("Cantidad Operadores Unicos");
+		lblOperadoresUnicos.setBounds(638, 334, 172, 14);
+		contentPane.add(lblOperadoresUnicos);
+		
+		lblOperandosUnicos = new JLabel("Cantidad Operandos Unicos");
+		lblOperandosUnicos.setBounds(638, 359, 172, 14);
+		contentPane.add(lblOperandosUnicos);
+		
+		lblOperadoresTotales = new JLabel("Cantidad Operadores Totales");
+		lblOperadoresTotales.setBounds(638, 384, 172, 14);
+		contentPane.add(lblOperadoresTotales);
+		
+		lblCantidadOperandosTotales = new JLabel("Cantidad Operandos Totales");
+		lblCantidadOperandosTotales.setBounds(638, 409, 172, 14);
+		contentPane.add(lblCantidadOperandosTotales);
+		
+		JSeparator separator_11 = new JSeparator();
+		separator_11.setBounds(638, 347, 172, 14);
+		contentPane.add(separator_11);
+		
+		JSeparator separator_12 = new JSeparator();
+		separator_12.setBounds(638, 372, 172, 14);
+		contentPane.add(separator_12);
+		
+		JSeparator separator_13 = new JSeparator();
+		separator_13.setBounds(638, 397, 172, 14);
+		contentPane.add(separator_13);
+		
+		JSeparator separator_14 = new JSeparator();
+		separator_14.setBounds(638, 422, 172, 14);
+		contentPane.add(separator_14);
+		
+		labelOperadoresUnicos = new JLabel("");
+		labelOperadoresUnicos.setBounds(820, 334, 46, 14);
+		contentPane.add(labelOperadoresUnicos);
+		
+		labelOperandosUnicos = new JLabel("");
+		labelOperandosUnicos.setBounds(820, 359, 46, 14);
+		contentPane.add(labelOperandosUnicos);
+		
+		labelOperadoresTotales = new JLabel("");
+		labelOperadoresTotales.setBounds(820, 384, 46, 14);
+		contentPane.add(labelOperadoresTotales);
+		
+		labelOperandosTotales = new JLabel("");
+		labelOperandosTotales.setBounds(820, 409, 46, 14);
+		contentPane.add(labelOperandosTotales);
 	}	
 	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
@@ -517,6 +574,10 @@ public class GUI extends JFrame {
 	    	labelFanOut.setText(String.valueOf(m.getFanOut()));
 	    	labelHalsteadLong.setText(String.valueOf(m.getHalsteadLongitud()));;
 	    	labelHalsteadVol.setText(String.format("%.2f",m.getHalsteadVolumen()));
+	    	labelOperadoresUnicos.setText(String.valueOf(m.getHalstead().get_n1()));
+	    	labelOperandosUnicos.setText(String.valueOf(m.getHalstead().get_n2()));
+	    	labelOperadoresTotales.setText(String.valueOf(m.getHalstead().getN1()));
+	    	labelOperandosTotales.setText(String.valueOf(m.getHalstead().getN2()));
 	    	textAreaCodigo.setText("");
 			textAreaCodigo.setText(m.getCuerpo());
 		}
