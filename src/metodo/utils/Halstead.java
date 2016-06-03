@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import metodo.Metodo;
 public class Halstead {
-	private final int TAM = 200;
+	private final int TAM = 1000;
 	private String [] operadores1= new String[]{"\\{","\\++","\\+=","\\*","\\[","\\(","\\--","\\==","\\!=","\\<=","\\>=","\\;","\\&&","\\|"};
 	private String [] operadores2= new String[]{"\\+","\\-","\\="};
 	private String [] operadores3= new String[]{"if","for","while","switch"};

@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import clase.Clase;
 import metodo.Metodo;
+import javax.swing.SwingConstants;
 
 public class GUI extends JFrame {
 
@@ -267,6 +268,7 @@ public class GUI extends JFrame {
 		contentPane.add(lblComentariosDeLnea);
 		
 		JLabel lblArchivo = new JLabel("Archivo/Carpeta:");
+		lblArchivo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblArchivo.setBounds(10, 11, 111, 14);
 		contentPane.add(lblArchivo);
 		
@@ -280,7 +282,8 @@ public class GUI extends JFrame {
 		contentPane.add(lblLineasTotales);
 		
 		lblFile = new JLabel("");
-		lblFile.setBounds(131, 11, 388, 14);
+		lblFile.setHorizontalAlignment(SwingConstants.LEFT);
+		lblFile.setBounds(112, 11, 494, 14);
 		contentPane.add(lblFile);
 		
 		lblLineasDeCodigo = new JLabel("");
@@ -584,9 +587,10 @@ public class GUI extends JFrame {
 		listModelClases.clear();
 		if(a.getClase()==null)
 			System.out.println("CLASE NULA");
-		else
+		else {
 			System.out.println("CLASE: "+a.getClase().getNombre());
-		listModelClases.addElement(a.getClase());
+			listModelClases.addElement(a.getClase());
+		}
 //		for(int i=0;i<nodo.getChildCount();i++){
 //			//if(!((Analizable)nodo.getUserObject()).isDirectory())
 //				listModelClases.addElement((DefaultMutableTreeNode)nodo.getChildAt(i));
