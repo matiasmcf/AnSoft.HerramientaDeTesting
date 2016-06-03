@@ -1,7 +1,6 @@
 package herramientaTesting;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -11,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,6 +25,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -37,7 +38,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import clase.Clase;
 import metodo.Metodo;
-import javax.swing.ScrollPaneConstants;
 
 public class GUI extends JFrame {
 
@@ -78,6 +78,10 @@ public class GUI extends JFrame {
 	private JLabel lblOperadoresTotales;
 	private JLabel lblOperandosUnicos;
 	private JLabel lblOperadoresUnicos;
+	
+	private JLabel warningComplejidad;
+	
+	private int severidadMinimaComplejidad;
 	
 	//Application
 	public static void main(String[] args) {
@@ -160,8 +164,11 @@ public class GUI extends JFrame {
 		});
 		mnArchivo.add(mntmSalir);
 		
+		JMenu mnConfiguracion = new JMenu("Configuracion");
+		menuBar.add(mnConfiguracion);
+		
 		JMenu mnLenguaje = new JMenu("Lenguaje");
-		menuBar.add(mnLenguaje);
+		mnConfiguracion.add(mnLenguaje);
 		
 //		JMenuItem mntmC = new JMenuItem("C");
 //		mntmC.addActionListener(new ActionListener() {
@@ -194,7 +201,7 @@ public class GUI extends JFrame {
 		mnLenguaje.add(mntmJava);
 		
 		JMenu mnComentarios = new JMenu("Comentarios");
-		menuBar.add(mnComentarios);
+		mnConfiguracion.add(mnComentarios);
 		
 		JMenu mnMultilinea = new JMenu("Multilinea");
 		mnComentarios.add(mnMultilinea);
@@ -216,6 +223,34 @@ public class GUI extends JFrame {
 			}
 		});
 		mnMultilinea.add(mntmContarBlancosAparte);
+		
+		JMenu mnWarnings = new JMenu("Warnings");
+		mnConfiguracion.add(mnWarnings);
+		
+		JMenuItem mntmSeveridadComplejidad = new JMenuItem("Severidad minima de complejidad");
+		mntmSeveridadComplejidad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String s = (String)JOptionPane.showInputDialog(
+	                    frame,
+	                    "Ingrese un valor entero positivo que representara el limite con el que se mostrara un warning\n",
+	                    "Severidad minima para complejidad",
+	                    JOptionPane.PLAIN_MESSAGE);
+				System.out.println(s);
+				try {
+					int valorIngresado = Integer.valueOf(s);
+					if(valorIngresado > 0) {
+						severidadMinimaComplejidad = valorIngresado;
+					}
+				} catch(NumberFormatException ex) {
+					JOptionPane.showMessageDialog(frame,
+						    "El valor debe ser un numero entero.",
+						    "Error al ingresar severidad",
+						    JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+		});
+		mnWarnings.add(mntmSeveridadComplejidad);
 		
 		JLabel lblLneasDeCdigo = new JLabel("L\u00EDneas de c\u00F3digo");
 		lblLneasDeCdigo.setBounds(638, 136, 172, 14);
@@ -267,7 +302,7 @@ public class GUI extends JFrame {
 		contentPane.add(separator_1);
 		
 		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(638, 199, 172, 14);
+		separator_2.setBounds(638, 199, 172, 8);
 		contentPane.add(separator_2);
 		
 		JSeparator separator_4 = new JSeparator();
@@ -469,6 +504,10 @@ public class GUI extends JFrame {
 		labelOperandosTotales = new JLabel("");
 		labelOperandosTotales.setBounds(820, 409, 46, 14);
 		contentPane.add(labelOperandosTotales);
+		
+		warningComplejidad = new JLabel("");
+		warningComplejidad.setBounds(785, 202, 22, 22);
+		contentPane.add(warningComplejidad);
 	}	
 	private void analizarPath(File file) {
 		//Verificar si es una carpeta o un archivo
@@ -580,6 +619,14 @@ public class GUI extends JFrame {
 	    	labelOperandosTotales.setText(String.valueOf(m.getHalstead().getN2()));
 	    	textAreaCodigo.setText("");
 			textAreaCodigo.setText(m.getCuerpo());
+			if(m.getComplejidadCiclomatica() > severidadMinimaComplejidad) {
+				ImageIcon ico = new ImageIcon(".\\media\\img\\warning_icon.png");
+				warningComplejidad.setIcon(ico);
+			}
+			else {
+				warningComplejidad.setIcon(null);
+			}
+			warningComplejidad.repaint();
 		}
 	}
 }
