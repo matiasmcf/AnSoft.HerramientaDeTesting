@@ -242,10 +242,12 @@ public class GUI extends JFrame {
 						severidadMinimaComplejidad = valorIngresado;
 					}
 				} catch(NumberFormatException ex) {
-					JOptionPane.showMessageDialog(frame,
+					if(s != null) {
+						JOptionPane.showMessageDialog(frame,
 						    "El valor debe ser un numero entero.",
 						    "Error al ingresar severidad",
 						    JOptionPane.ERROR_MESSAGE);
+					}
 				}
 				
 			}
