@@ -81,7 +81,7 @@ public class GUI extends JFrame {
 	
 	private JLabel warningComplejidad;
 	
-	private int severidadMinimaComplejidad;
+	private int severidadMinimaComplejidad = 10;
 	
 	//Application
 	public static void main(String[] args) {
